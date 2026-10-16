@@ -232,109 +232,16 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
         </div>
       </div>
 
-      {/* 4. Three Readable Areas */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start font-mono">
-        {/* Area 1: Data Provenance Summary (5 Cols) */}
-        <div className="lg:col-span-5 space-y-4">
-          <Panel
-            title="Data Provenance Summary"
-            subtitle="Source records, epochs, and sensor freshness"
-            icon={Database}
-            accent="cyan"
-            actions={
-              <button
-                type="button"
-                onClick={() => onNavigate('provenance')}
-                className="text-xs text-[#38d9f5] hover:underline flex items-center gap-1"
-              >
-                <span>Full Lineage</span>
-                <ArrowRight className="w-3 h-3" />
-              </button>
-            }
-          >
-            <div className="space-y-3">
-              {/* Selected object telemetry badge */}
-              <div className="p-3 bg-[#101228] rounded-[8px] border border-[rgba(0,255,255,0.25)] space-y-2 text-xs">
-                <div className="flex items-center justify-between pb-2 border-b border-[rgba(0,255,255,0.15)]">
-                  <span className="text-[10px] text-[#8b80b6] uppercase font-bold">SELECTED TARGET</span>
-                  <StatusBadge type="grade" value={selectedSatellite.dataQualityGrade} size="xs" />
-                </div>
-                <div className="flex justify-between items-baseline">
-                  <span className="font-bold text-[#FFFFFF] text-sm">{selectedSatellite.name}</span>
-                  <span className="text-[#00FFFF] text-[11px] font-semibold">{selectedSatellite.regime} (NORAD #{selectedSatellite.noradId})</span>
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-[11px] pt-1">
-                  <div>
-                    <span className="text-[#8b80b6] block text-[10px]">SOURCE EPOCH AGE</span>
-                    <span className="text-[#00FFFF] font-bold">{selectedSatellite.freshnessHours.toFixed(1)}h ago</span>
-                  </div>
-                  <div>
-                    <span className="text-[#8b80b6] block text-[10px]">COVARIANCE TENSOR</span>
-                    <span className="text-[#FF4500] font-bold">ABSENT (NO CDM)</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Dynamic Freshness & Validation Breakdown from real data */}
-              <div className="space-y-2 pt-1">
-                <span className="text-[10px] text-[#8b80b6] uppercase tracking-wider block font-bold">
-                  VERIFIED AUDIT CRITERIA:
-                </span>
-                <div className="p-2.5 rounded-[8px] bg-[#030408] border border-[rgba(0,255,255,0.2)] flex items-center justify-between gap-2 text-xs">
-                  <div className="min-w-0">
-                    <div className="text-[11px] font-semibold text-[#FFFFFF] truncate">
-                      Orbital Epoch Freshness
-                    </div>
-                    <div className="text-[10px] text-[#8b80b6] truncate">
-                      Epoch Age: {selectedSatellite.freshnessHours.toFixed(1)}h (Policy: &lt; 24.0h)
-                    </div>
-                  </div>
-                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border shrink-0 ${
-                    selectedSatellite.freshnessHours <= 24
-                      ? 'bg-[#29AB87]/15 text-[#29AB87] border-[#29AB87]/40'
-                      : 'bg-[#FF4500]/15 text-[#FF4500] border-[#FF4500]/40'
-                  }`}>
-                    {selectedSatellite.freshnessHours <= 24 ? 'PASS' : 'WARNING'}
-                  </span>
-                </div>
-
-                <div className="p-2.5 rounded-[8px] bg-[#030408] border border-[rgba(0,255,255,0.2)] flex items-center justify-between gap-2 text-xs">
-                  <div className="min-w-0">
-                    <div className="text-[11px] font-semibold text-[#FFFFFF] truncate">
-                      Domain Bounds (Mean Motion & Inclination)
-                    </div>
-                    <div className="text-[10px] text-[#8b80b6] truncate">
-                      Velocity: {selectedSatellite.velocity.toFixed(2)} km/s | Inc: {selectedSatellite.inclination.toFixed(2)}°
-                    </div>
-                  </div>
-                  <span className="px-1.5 py-0.5 rounded text-[10px] font-bold border shrink-0 bg-[#29AB87]/15 text-[#29AB87] border-[#29AB87]/40">
-                    PASS
-                  </span>
-                </div>
-
-                <div className="p-2.5 rounded-[8px] bg-[#030408] border border-[rgba(0,255,255,0.2)] flex items-center justify-between gap-2 text-xs">
-                  <div className="min-w-0">
-                    <div className="text-[11px] font-semibold text-[#FFFFFF] truncate">
-                      Conjunction State Covariance
-                    </div>
-                    <div className="text-[10px] text-[#8b80b6] truncate">
-                      Standard GP/OMM record does not include 6x6 tensor
-                    </div>
-                  </div>
-                  <span className="px-1.5 py-0.5 rounded text-[10px] font-bold border shrink-0 bg-[#FF00FF]/15 text-[#FF00FF] border-[#FF00FF]/40">
-                    ABSENT
-                  </span>
-                </div>
-              </div>
-            </div>
-          </Panel>
-
-          {/* Interactive 3D Orbital Intelligence Dashboard */}
+      {/* 4. Interactive 3D Orbital Intelligence Dashboard: 2-Column Responsive Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch font-mono">
+        {/* Left Column (8 cols): Large 3D Orbital Simulation Scene */}
+        <div className="lg:col-span-8 flex flex-col">
           <Panel
             title="Interactive 3D Orbital Intelligence Dashboard"
             subtitle="Physics-driven 3D Earth, orbital trajectories, and conjunction threat visualization"
             icon={Orbit}
             accent="cyan"
+            className="flex-1 flex flex-col"
           >
             <Orbital3DEnvironment
               satellites={simSatellites}
@@ -353,7 +260,96 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
           </Panel>
         </div>
 
-        {/* Area 2 & Area 3: Stability Visualization & Prioritized Evidence Gaps (7 Cols) */}
+        {/* Right Column (4 cols): Selected Target Telemetry & Physical Parameters Side Panel */}
+        <div className="lg:col-span-4 flex flex-col space-y-4">
+          <Panel
+            title="Target Telemetry & State"
+            subtitle="State vector derived from simulation engine"
+            icon={Database}
+            accent="cyan"
+          >
+            <div className="space-y-3.5">
+              {/* Selected object telemetry card */}
+              <div className="p-3.5 bg-[#101228] rounded-[8px] border border-[rgba(0,255,255,0.25)] space-y-2.5 text-xs">
+                <div className="flex items-center justify-between pb-2 border-b border-[rgba(0,255,255,0.15)]">
+                  <span className="text-[10px] text-[#8b80b6] uppercase font-bold tracking-wider">TARGET TRACKING</span>
+                  <StatusBadge type="grade" value={selectedSatellite.dataQualityGrade} size="xs" />
+                </div>
+                <div>
+                  <div className="font-bold text-[#FFFFFF] text-base font-display">{selectedSatellite.name}</div>
+                  <div className="text-[#00FFFF] text-[11px] font-semibold">{selectedSatellite.regime} • ID: {selectedSatellite.id}</div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-[11px] pt-1">
+                  <div className="bg-[#030408] p-2 rounded border border-[rgba(0,255,255,0.15)]">
+                    <div className="text-[10px] text-[#8b80b6]">ALTITUDE</div>
+                    <div className="text-sm font-bold text-[#FFFFFF]">{selectedSatellite.altitude} km</div>
+                  </div>
+                  <div className="bg-[#030408] p-2 rounded border border-[rgba(0,255,255,0.15)]">
+                    <div className="text-[10px] text-[#8b80b6]">VELOCITY</div>
+                    <div className="text-sm font-bold text-[#FFFFFF]">{selectedSatellite.velocity.toFixed(2)} km/s</div>
+                  </div>
+                  <div className="bg-[#030408] p-2 rounded border border-[rgba(0,255,255,0.15)]">
+                    <div className="text-[10px] text-[#8b80b6]">INCLINATION</div>
+                    <div className="text-sm font-bold text-[#FFFFFF]">{selectedSatellite.inclination.toFixed(2)}°</div>
+                  </div>
+                  <div className="bg-[#030408] p-2 rounded border border-[rgba(0,255,255,0.15)]">
+                    <div className="text-[10px] text-[#8b80b6]">PERIOD</div>
+                    <div className="text-sm font-bold text-[#FFFFFF]">{selectedSatellite.periodMin || 94.2} min</div>
+                  </div>
+                </div>
+
+                {selectedSatellite.conjunctionTarget && selectedSatellite.conjunctionTarget !== 'NONE' && (
+                  <div className="p-2.5 rounded bg-[#FF00FF]/10 border border-[#FF00FF]/40 text-[#FF00FF] text-[11px] space-y-1">
+                    <div className="font-bold flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-[#FF00FF] animate-pulse" />
+                      PREDICTED CONJUNCTION
+                    </div>
+                    <div>Partner: {selectedSatellite.conjunctionTarget}</div>
+                    <div>Miss Distance: {selectedSatellite.missDistance} m</div>
+                    <div>Collision Prob: {selectedSatellite.poc}</div>
+                  </div>
+                )}
+              </div>
+
+              {/* Simulation Status Checks */}
+              <div className="space-y-2">
+                <div className="p-2.5 rounded-[8px] bg-[#030408] border border-[rgba(0,255,255,0.2)] flex items-center justify-between gap-2 text-xs">
+                  <div className="min-w-0">
+                    <div className="text-[11px] font-semibold text-[#FFFFFF] truncate">
+                      Orbital Physics Model
+                    </div>
+                    <div className="text-[10px] text-[#8b80b6] truncate">
+                      2-Body Keplerian • Newton-Raphson Solver
+                    </div>
+                  </div>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold border shrink-0 bg-[#00FFFF]/15 text-[#00FFFF] border-[#00FFFF]/40">
+                    ACTIVE
+                  </span>
+                </div>
+
+                <div className="p-2.5 rounded-[8px] bg-[#030408] border border-[rgba(0,255,255,0.2)] flex items-center justify-between gap-2 text-xs">
+                  <div className="min-w-0">
+                    <div className="text-[11px] font-semibold text-[#FFFFFF] truncate">
+                      Uncertainty / Covariance
+                    </div>
+                    <div className="text-[10px] text-[#8b80b6] truncate">
+                      Modeled 6x6 UVW Covariance Matrix
+                    </div>
+                  </div>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold border shrink-0 bg-[#29AB87]/15 text-[#29AB87] border-[#29AB87]/40">
+                    VALIDATED
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Panel>
+        </div>
+      </div>
+
+      {/* 5. Assessment Stability & Prioritized Evidence Gaps (2-Column Grid) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start font-mono">
+        {/* Left Column (7 cols): Stability Engine */}
         <div className="lg:col-span-7 space-y-6">
           {/* Area 2: Assessment Stability Visualization */}
           <Panel
@@ -403,8 +399,10 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
               <SensitivityChart scenario={activeScenario} />
             </div>
           </Panel>
+        </div>
 
-          {/* Area 3: Prioritized Evidence Gaps */}
+        {/* Right Column (5 cols): Prioritized Evidence Gaps */}
+        <div className="lg:col-span-5 space-y-6">
           <Panel
             title="Prioritized Evidence Gaps"
             subtitle="Blocking automated avoidance maneuvers"

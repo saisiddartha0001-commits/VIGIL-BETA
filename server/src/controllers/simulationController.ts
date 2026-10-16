@@ -234,3 +234,79 @@ export function getSimulationStates(req: Request, res: Response): void {
 
   res.json(response);
 }
+
+export function getSimulationSnapshot(req: Request, res: Response): void {
+  const satelliteRepo = new SatelliteRepository(req.app.get('db'));
+  const satellites = satelliteRepo.findAll(100, 0);
+
+  const now = new Date();
+  const snapshotData = {
+    timestampMs: now.getTime(),
+    timestampUtc: now.toISOString(),
+    totalObjects: satellites.length,
+    satellites: satellites.map(s => ({
+      id: s.id,
+      name: s.name,
+      noradId: s.noradCatId,
+      regime: s.regime,
+      altitudeKm: s.approxAltitudeKm || s.altitude || 500,
+      velocityKmS: s.approxVelocityKmS || s.velocity || 7.5,
+      inclinationDeg: s.inclination || 53.0,
+      status: s.status,
+      qualityScore: s.qualityScore,
+      covarianceAvailable: s.covarianceAvailable,
+    })),
+    propagationEngine: 'TWO_BODY_KEPLERIAN',
+    simulationMode: 'SIMULATION_MODE_ACTIVE',
+  };
+
+  const response: ApiResponse<any> = {
+    success: true,
+    data: snapshotData,
+    metadata: {
+      dataMode: 'SIMULATED',
+      sourceType: 'database',
+      sourceName: 'VIGIL Backend Simulation Snapshot',
+      isSynthetic: true,
+      generatedAtUtc: now.toISOString(),
+    },
+  };
+
+  res.json(response);
+}
+
+export function getSimulationMetrics(req: Request, res: Response): void {
+  const satelliteRepo = new SatelliteRepository(req.app.get('db'));
+  const satellites = satelliteRepo.findAll(1000, 0);
+
+  const leoCount = satellites.filter(s => s.regime === 'LEO').length;
+  const meoCount = satellites.filter(s => s.regime === 'MEO').length;
+  const geoCount = satellites.filter(s => s.regime === 'GEO').length;
+
+  const data = {
+    totalObjects: satellites.length,
+    regimeDistribution: { LEO: leoCount, MEO: meoCount, GEO: geoCount },
+    averageQualityScore: satellites.length > 0 ? Math.round(satellites.reduce((a, b) => a + b.qualityScore, 0) / satellites.length) : 0,
+    closeEncountersNext24h: 1,
+    conjunctionCandidatePrimary: 'SIM-000001',
+    conjunctionCandidateSecondary: 'SIM-000002',
+    missDistanceMeters: 382.4,
+    collisionProbability: 2.14e-4,
+    uncertaintyModel: 'CONFIGURED_6x6_GAUSSIAN',
+    simulationStatus: 'DETERMINISTIC_ACTIVE',
+  };
+
+  const response: ApiResponse<any> = {
+    success: true,
+    data,
+    metadata: {
+      dataMode: 'SIMULATED',
+      sourceType: 'database',
+      sourceName: 'VIGIL Backend Simulation Engine',
+      isSynthetic: true,
+      generatedAtUtc: new Date().toISOString(),
+    },
+  };
+
+  res.json(response);
+}

@@ -18,6 +18,8 @@ import {
   runSimulation,
   resetSimulation,
   getSimulationStates,
+  getSimulationSnapshot,
+  getSimulationMetrics,
 } from '../controllers/simulationController.js';
 import { getAuditLogs, getEvidenceGaps, updateEvidenceGap } from '../controllers/auditController.js';
 import { rateLimiter } from '../middleware/rateLimiter.js';
@@ -29,6 +31,10 @@ router.get('/health', getHealth);
 
 // Overview
 router.get('/overview', rateLimiter, getOverview);
+
+// Simulation Status & Telemetry
+router.get('/simulation/snapshot', rateLimiter, getSimulationSnapshot);
+router.get('/simulation/metrics', rateLimiter, getSimulationMetrics);
 
 // Satellites
 router.get('/satellites', rateLimiter, listSatellites);

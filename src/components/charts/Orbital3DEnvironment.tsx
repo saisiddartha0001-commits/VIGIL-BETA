@@ -322,6 +322,19 @@ export const Orbital3DEnvironment: React.FC<Orbital3DEnvironmentProps> = ({
     }
   };
 
+  const handleFocusSatellite = (satId: string) => {
+    const target = satellites.find(s => s.id === satId);
+    if (!target || !cameraRef.current) return;
+    const px = target.positionKm.x * SCALE_KM;
+    const py = target.positionKm.z * SCALE_KM;
+    const pz = -target.positionKm.y * SCALE_KM;
+
+    const dir = new THREE.Vector3(px, py, pz).normalize();
+    const distance = Math.sqrt(px * px + py * py + pz * pz) + 4.5;
+    cameraRef.current.position.set(dir.x * distance, dir.y * distance + 1.5, dir.z * distance);
+    cameraRef.current.lookAt(px, py, pz);
+  };
+
   return (
     <div className="relative w-full h-[580px] bg-[#030408] rounded-xl border border-[rgba(0,255,255,0.25)] overflow-hidden shadow-[0_0_30px_rgba(0,255,255,0.1)] flex flex-col font-mono select-none">
       {/* Top Header HUD overlay */}
@@ -355,35 +368,22 @@ export const Orbital3DEnvironment: React.FC<Orbital3DEnvironmentProps> = ({
       {/* 3D WebGL Canvas Container */}
       <div ref={containerRef} className="flex-1 w-full h-full relative cursor-grab active:cursor-grabbing" />
 
-      {/* Selected Satellite Mini HUD Overlay */}
+      {/* Selected Satellite Target Focus Bar (Unobtrusive Corner Pill) */}
       {selectedSat && (
-        <div className="absolute top-14 left-4 z-10 w-72 p-3 bg-[#090d1f]/95 border border-[#00FFFF]/40 rounded-lg shadow-[0_0_20px_rgba(0,255,255,0.2)] text-xs backdrop-blur-md">
-          <div className="flex items-center justify-between pb-1.5 border-b border-[rgba(0,255,255,0.2)] mb-2">
-            <span className="font-bold text-[#00FFFF] truncate">{selectedSat.name}</span>
-            <span className="text-[10px] text-[#8b80b6] px-1.5 py-0.5 rounded bg-[#111530]">
+        <div className="absolute top-12 left-3 z-10 p-2.5 bg-[#090d1f]/90 border border-[#00FFFF]/40 rounded-lg shadow-[0_0_15px_rgba(0,255,255,0.2)] text-[11px] backdrop-blur-md flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#00FFFF] animate-ping" />
+            <span className="font-bold text-[#FFFFFF]">{selectedSat.name}</span>
+            <span className="text-[10px] text-[#00FFFF] bg-[#111530] px-1.5 py-0.5 rounded border border-[#00FFFF]/20">
               {selectedSat.id}
             </span>
           </div>
-          <div className="grid grid-cols-2 gap-y-1.5 text-[11px] text-[#edf4ff]">
-            <div><span className="text-[#8b80b6]">Regime:</span> {selectedSat.regime}</div>
-            <div><span className="text-[#8b80b6]">Type:</span> {selectedSat.type}</div>
-            <div><span className="text-[#8b80b6]">Altitude:</span> {Math.round(selectedSat.altitudeKm)} km</div>
-            <div><span className="text-[#8b80b6]">Speed:</span> {selectedSat.speedKmS.toFixed(2)} km/s</div>
-            <div><span className="text-[#8b80b6]">Period:</span> {selectedSat.periodMinutes.toFixed(1)} m</div>
-            <div><span className="text-[#8b80b6]">Status:</span> {selectedSat.status}</div>
-          </div>
-
-          {selectedSat.conjunctionPartnerId && (
-            <div className="mt-2 pt-1.5 border-t border-[rgba(255,0,255,0.3)] text-[10px] text-[#FF00FF]">
-              ⚠ Impending Conjunction with {selectedSat.conjunctionPartnerId}
-              {selectedSat.minMissDistanceM !== undefined && (
-                <div>Miss Distance: {selectedSat.minMissDistanceM} m</div>
-              )}
-              {selectedSat.pocValue !== undefined && (
-                <div>Collision Prob: {selectedSat.pocValue.toExponential(3)}</div>
-              )}
-            </div>
-          )}
+          <button
+            onClick={() => handleFocusSatellite(selectedSat.id)}
+            className="px-2 py-0.5 bg-[#00FFFF]/20 hover:bg-[#00FFFF]/30 border border-[#00FFFF]/50 text-[#00FFFF] rounded text-[10px] font-bold transition-colors"
+          >
+            FOCUS
+          </button>
         </div>
       )}
 
