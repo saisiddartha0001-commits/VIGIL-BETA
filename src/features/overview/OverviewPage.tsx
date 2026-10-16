@@ -7,10 +7,11 @@ import {
   FreshnessCheck,
   PageId,
 } from '../../types/vigil';
+import { SimulatedSatellite } from '../../types/simulation';
 import { MetricCard } from '../../components/ui/MetricCard';
 import { Panel } from '../../components/ui/Panel';
 import { StatusBadge } from '../../components/ui/StatusBadge';
-import { OrbitSchematic } from '../../components/charts/OrbitSchematic';
+import { Orbital3DEnvironment } from '../../components/charts/Orbital3DEnvironment';
 import { SensitivityChart } from '../../components/charts/SensitivityChart';
 import { EvidenceTraceDiagram } from '../../components/charts/EvidenceTraceDiagram';
 import {
@@ -27,6 +28,7 @@ import {
 
 interface OverviewPageProps {
   satellites: OrbitalObject[];
+  simSatellites?: SimulatedSatellite[];
   selectedSatellite: OrbitalObject;
   onSelectSatellite: (sat: OrbitalObject) => void;
   scenarios: AssessmentScenario[];
@@ -37,10 +39,17 @@ interface OverviewPageProps {
   freshnessChecks: FreshnessCheck[];
   onNavigate: (page: PageId, targetId?: string) => void;
   onRequestSimBurn: (satId: string) => void;
+  isSimPlaying?: boolean;
+  onToggleSimPlay?: () => void;
+  simSpeed?: number;
+  onSetSimSpeed?: (speed: number) => void;
+  onResetSimClock?: () => void;
+  currentSimUtc?: string;
 }
 
 export const OverviewPage: React.FC<OverviewPageProps> = ({
   satellites,
+  simSatellites = [],
   selectedSatellite,
   onSelectSatellite,
   scenarios,
@@ -51,6 +60,12 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
   freshnessChecks,
   onNavigate,
   onRequestSimBurn,
+  isSimPlaying = false,
+  onToggleSimPlay = () => {},
+  simSpeed = 1,
+  onSetSimSpeed = () => {},
+  onResetSimClock = () => {},
+  currentSimUtc = new Date().toISOString(),
 }) => {
   const staleChecksCount = freshnessChecks.filter((c) => c.status !== 'PASS').length;
   const criticalGapsCount = evidenceGaps.filter((g) => g.severity === 'CRITICAL').length;
@@ -91,7 +106,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
         <MetricCard
           label="Freshness Checks"
           value={`${staleChecksCount} Flagged`}
-          subtitle="3 of 4 checks exceed latency tolerances"
+          subtitle={`${staleChecksCount} of ${freshnessChecks.length} checks require attention`}
           icon={Clock}
           variant={staleChecksCount > 0 ? 'danger' : 'success'}
           onClick={() => onNavigate('provenance')}
@@ -165,7 +180,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
                   </span>
                 </div>
                 <div className="text-[11px] text-[#FFFFFF] font-semibold">
-                  SGP4 Model Certified
+                  SGP4 Propagation Compatible
                 </div>
                 <div className="text-[10px] text-[#00FFFF]/80 font-sans leading-snug">
                   Mean motion ({selectedSatellite.velocity.toFixed(2)} km/s) & BSTAR inputs valid.
@@ -207,11 +222,11 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
 
             <button
               type="button"
-              onClick={() => onNavigate('provenance')}
-              className="px-4 py-2 bg-[#111530] hover:bg-[#191c40] text-[#00FFFF] border border-[#00FFFF]/40 text-xs rounded-[8px] flex items-center justify-center gap-2 transition-all"
+              onClick={() => onRequestSimBurn(selectedSatellite.id)}
+              className="px-4 py-2 bg-[#FF00FF]/15 hover:bg-[#FF00FF]/25 text-[#FF00FF] border border-[#FF00FF]/40 text-xs rounded-[8px] flex items-center justify-center gap-2 transition-all font-bold"
             >
-              <Database className="w-4 h-4 text-[#00FFFF]" />
-              <span className="font-display tracking-wider text-[11px]">INSPECT LINEAGE</span>
+              <Orbit className="w-4 h-4 text-[#FF00FF]" />
+              <span className="font-display tracking-wider text-[11px]">MANEUVER DOSSIER</span>
             </button>
           </div>
         </div>
@@ -314,17 +329,26 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
             </div>
           </Panel>
 
-          {/* Quick Interactive Polar Orbit Schematic */}
+          {/* Interactive 3D Orbital Intelligence Dashboard */}
           <Panel
-            title="Interactive Polar Radar"
-            subtitle="Click satellites to target and inspect"
+            title="Interactive 3D Orbital Intelligence Dashboard"
+            subtitle="Physics-driven 3D Earth, orbital trajectories, and conjunction threat visualization"
             icon={Orbit}
+            accent="cyan"
           >
-            <OrbitSchematic
-              satellites={satellites}
-              selectedSatellite={selectedSatellite}
-              onSelectSatellite={onSelectSatellite}
-              onRequestBurn={onRequestSimBurn}
+            <Orbital3DEnvironment
+              satellites={simSatellites}
+              selectedSatId={selectedSatellite.id}
+              onSelectSatellite={(satId) => {
+                const match = satellites.find(s => s.id === satId);
+                if (match) onSelectSatellite(match);
+              }}
+              isPlaying={isSimPlaying}
+              onTogglePlay={onToggleSimPlay}
+              speed={simSpeed}
+              onSetSpeed={onSetSimSpeed}
+              onResetClock={onResetSimClock}
+              currentSimUtc={currentSimUtc}
             />
           </Panel>
         </div>

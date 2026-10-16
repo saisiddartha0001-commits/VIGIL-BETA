@@ -3,7 +3,7 @@ import { OrbitalObject } from '../../types/vigil';
 
 interface OrbitSchematicProps {
   satellites: OrbitalObject[];
-  selectedSatellite: OrbitalObject;
+  selectedSatellite: OrbitalObject | null;
   onSelectSatellite: (sat: OrbitalObject) => void;
   onRequestBurn?: (satId: string) => void;
   className?: string;
@@ -15,6 +15,8 @@ export const OrbitSchematic: React.FC<OrbitSchematicProps> = ({
   onSelectSatellite,
   className = '',
 }) => {
+  // Use first satellite as default if none selected
+  const displaySatellite = selectedSatellite || (satellites.length > 0 ? satellites[0] : null);
   const [hoveredSatId, setHoveredSatId] = useState<string | null>(null);
 
   // SVG coordinate system
@@ -28,9 +30,9 @@ export const OrbitSchematic: React.FC<OrbitSchematicProps> = ({
   const geoRadius = maxRadius * 0.92;
 
   // Find conjunction pairing for selected satellite if any
-  const conjunctionPartner = satellites.find(
-    (s) => s.id === selectedSatellite.conjunctionTarget || s.conjunctionTarget === selectedSatellite.name
-  );
+  const conjunctionPartner = displaySatellite ? satellites.find(
+    (s) => s.id === displaySatellite.conjunctionTarget || s.conjunctionTarget === displaySatellite.name
+  ) : null;
 
   return (
     <div className={`relative flex flex-col items-center select-none font-mono ${className}`}>
@@ -196,11 +198,11 @@ export const OrbitSchematic: React.FC<OrbitSchematicProps> = ({
           </text>
 
           {/* Conjunction Threat Vector between colliding pairs */}
-          {conjunctionPartner && selectedSatellite.riskLevel === 'Critical' && (
+          {conjunctionPartner && displaySatellite && displaySatellite.riskLevel === 'Critical' && (
             (() => {
-              const r1 = maxRadius * selectedSatellite.radiusRatio;
-              const x1 = center + r1 * Math.cos(selectedSatellite.angle);
-              const y1 = center + r1 * Math.sin(selectedSatellite.angle);
+              const r1 = maxRadius * displaySatellite.radiusRatio;
+              const x1 = center + r1 * Math.cos(displaySatellite.angle);
+              const y1 = center + r1 * Math.sin(displaySatellite.angle);
 
               const r2 = maxRadius * conjunctionPartner.radiusRatio;
               const x2 = center + r2 * Math.cos(conjunctionPartner.angle);
@@ -241,7 +243,7 @@ export const OrbitSchematic: React.FC<OrbitSchematicProps> = ({
                     fontWeight="bold"
                     fontFamily="JetBrains Mono"
                   >
-                    Δ {selectedSatellite.missDistance}m
+                    Δ {displaySatellite.missDistance}m
                   </text>
                 </g>
               );
@@ -253,7 +255,7 @@ export const OrbitSchematic: React.FC<OrbitSchematicProps> = ({
             const r = maxRadius * sat.radiusRatio;
             const x = center + r * Math.cos(sat.angle);
             const y = center + r * Math.sin(sat.angle);
-            const isSelected = selectedSatellite.id === sat.id;
+            const isSelected = displaySatellite?.id === sat.id;
             const isHovered = hoveredSatId === sat.id;
             const isCritical = sat.riskLevel === 'Critical';
 

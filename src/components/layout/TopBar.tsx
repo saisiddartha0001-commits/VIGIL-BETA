@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Menu, Clock, AlertCircle } from 'lucide-react';
+import { Search, Menu, Clock } from 'lucide-react';
 
 interface TopBarProps {
   pageTitle: string;
@@ -77,11 +77,11 @@ export const TopBar: React.FC<TopBarProps> = ({
           <span className="text-[11px] font-medium">{utcTime}</span>
         </div>
 
-        {/* Visible Synthetic Demo Data Indicator */}
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-[8px] bg-[#FF4500]/15 border border-[#FF4500]/40 text-[#FF4500] text-[10px] font-bold tracking-wider shadow-[0_0_10px_rgba(255,69,0,0.2)]">
-          <AlertCircle className="w-3 h-3 text-[#FF4500] shrink-0" />
-          <span className="hidden xs:inline">SYNTHETIC AUDIT DATA</span>
-          <span className="xs:hidden">DEMO</span>
+        {/* Simulation Mode Indicator */}
+        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-[8px] bg-[#00FFFF]/15 border border-[#00FFFF]/40 text-[#00FFFF] text-[10px] font-bold tracking-wider shadow-[0_0_10px_rgba(0,255,255,0.2)]">
+          <span className="w-2 h-2 rounded-full bg-[#00FFFF] animate-pulse shrink-0" />
+          <span className="hidden xs:inline">SIMULATION MODE ACTIVE</span>
+          <span className="xs:hidden">SIM</span>
         </div>
       </div>
     </header>

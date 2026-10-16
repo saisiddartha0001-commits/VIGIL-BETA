@@ -7,7 +7,6 @@ import { formatAltitude, formatVelocity, formatDistance } from '../../utils/form
 import {
   Orbit,
   Search,
-  Flame,
   FileSearch,
   FlaskConical,
   ShieldAlert,
@@ -422,14 +421,14 @@ export const ObjectCatalogPage: React.FC<ObjectCatalogPageProps> = ({
                   </button>
                 )}
 
-                {selectedSatellite.riskLevel === 'Critical' && onRequestSimBurn && (
+                {onRequestSimBurn && (
                   <button
                     type="button"
                     onClick={() => onRequestSimBurn(selectedSatellite.id)}
-                    className="w-full py-2 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-lg uppercase tracking-wider shadow-[0_0_15px_rgba(255,83,107,0.4)] flex items-center justify-center gap-2 transition-all"
+                    className="w-full py-2 bg-[#00FFFF] hover:bg-[#00FFFF]/85 text-[#030408] font-bold rounded-lg uppercase tracking-wider shadow-[0_0_15px_rgba(0,255,255,0.3)] flex items-center justify-center gap-2 transition-all"
                   >
-                    <Flame className="w-3.5 h-3.5" />
-                    <span>Simulate Avoidance Maneuver</span>
+                    <FileSearch className="w-3.5 h-3.5" />
+                    <span>Export Audit Dossier</span>
                   </button>
                 )}
               </div>

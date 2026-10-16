@@ -14,7 +14,7 @@ typography:
     fontFamily: Azonix
     fontSize: 2.5rem
     fontWeight: 700
-  body-md:
+  body-md: 
     fontFamily: Azonix
     fontSize: 1rem
     fontWeight: 400

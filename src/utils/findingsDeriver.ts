@@ -86,7 +86,7 @@ export function deriveEvidenceGaps(
       id: 'FINDING-SCHEMA-ANOM-03',
       title: 'Orbital Record Domain Bounds Anomaly Detected',
       severity: 'CRITICAL',
-      category: 'SENSOR_LINEAGE',
+      category: 'OBSERVATION_LATENCY',
       affectedObjects: schemaOrDomainFails.map((r) => `${r.objectName} #${r.noradCatId}`),
       description: `${schemaOrDomainFails.length} record(s) failed numerical or physical domain validation checks.`,
       whyItMatters:

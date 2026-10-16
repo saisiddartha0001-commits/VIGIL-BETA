@@ -1,6 +1,6 @@
 import React from 'react';
 import { OrbitalObject } from '../../types/vigil';
-import { FileCheck, X, Download, ShieldCheck, Database, Calendar } from 'lucide-react';
+import { FileCheck, X, Download, Database, Calendar } from 'lucide-react';
 
 interface AuditDossierModalProps {
   isOpen: boolean;

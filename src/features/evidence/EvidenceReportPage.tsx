@@ -66,8 +66,6 @@ export const EvidenceReportPage: React.FC<EvidenceReportPageProps> = ({
     return gap.severity === filterSeverity;
   });
 
-  const criticalCount = evidenceGaps.filter((g) => g.severity === 'CRITICAL').length;
-
   return (
     <div className="space-y-6 font-mono">
       {/* Header */}
@@ -88,12 +86,12 @@ export const EvidenceReportPage: React.FC<EvidenceReportPageProps> = ({
                 className="px-3 py-1.5 rounded-lg bg-[#101c30] hover:bg-[#14233c] text-[#38d9f5] border border-[#38d9f5]/30 font-semibold text-xs flex items-center gap-1.5 transition-colors"
               >
                 <Database className="w-3.5 h-3.5" />
-                <span>Sensor Lineage</span>
+                <span>Data Provenance</span>
               </button>
             )}
-            <span className="px-3 py-1.5 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-300 font-bold text-xs flex items-center gap-2">
-              <ShieldX className="w-4 h-4 text-rose-400" />
-              <span>MANEUVER APPROVAL: BLOCKED</span>
+            <span className="px-3 py-1.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold text-xs flex items-center gap-2">
+              <ShieldX className="w-4 h-4 text-amber-400" />
+              <span>COLLISION-RISK: NOT PERFORMED</span>
             </span>
           </div>
         }
@@ -124,7 +122,7 @@ export const EvidenceReportPage: React.FC<EvidenceReportPageProps> = ({
             </div>
             <div className="p-3 bg-[#030408] rounded-[8px] border border-[#FF00FF]/40 text-center">
               <span className="text-[10px] text-[#FF00FF] uppercase block">EVIDENCE GAPS</span>
-              <span className="text-xl font-bold text-[#FF00FF]">{criticalCount} Flagged</span>
+              <span className="text-xl font-bold text-[#FF00FF]">{evidenceGaps.length} Flagged</span>
             </div>
           </div>
         </div>
@@ -265,7 +263,7 @@ export const EvidenceReportPage: React.FC<EvidenceReportPageProps> = ({
                           className="px-3 py-1.5 rounded-lg bg-[#38d9f5]/15 hover:bg-[#38d9f5]/25 text-[#38d9f5] border border-[#38d9f5]/30 text-xs font-semibold flex items-center gap-1.5 transition-all"
                         >
                           <Radio className="w-3.5 h-3.5" />
-                          <span>Simulate Radar Tasking</span>
+                          <span>Acknowledge Gap</span>
                         </button>
                       )}
                       {onNavigateToStability && (

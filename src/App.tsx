@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { PageId, OrbitalObject, AssessmentScenario } from './types/vigil';
 import { AppShell } from './components/layout/AppShell';
 import { OverviewPage } from './features/overview/OverviewPage';
@@ -6,11 +6,9 @@ import { DataProvenancePage } from './features/provenance/DataProvenancePage';
 import { StabilityLabPage } from './features/stability/StabilityLabPage';
 import { EvidenceReportPage } from './features/evidence/EvidenceReportPage';
 import { ObjectCatalogPage } from './features/catalog/ObjectCatalogPage';
-import { ManeuverModal } from './components/ui/ManeuverModal';
 import {
   DEMO_FRESHNESS_CHECKS,
   DEMO_STABILITY_SCENARIOS,
-  DEMO_EVIDENCE_GAPS,
   DEMO_EVIDENCE_TRACE,
   DEMO_AUDIT_LOG,
 } from './data/demoData';
@@ -19,35 +17,70 @@ import satcatSnapshot from './data/satcatSnapshot.json';
 import { PublicDataManifest, AuditedOmmRecord, SatcatRecord } from './types/omm';
 
 import { ommRecordToOrbitalObject } from './utils/ommTransform';
+import { deriveEvidenceGaps } from './utils/findingsDeriver';
+import { AuditDossierModal } from './components/ui/AuditDossierModal';
+import { sharedSimulationEngine } from './simulation/engine';
+import { simulatedSatelliteToOrbitalObject } from './simulation/adapter';
+import { deriveSimulationEvidenceGaps } from './simulation/simulationFindings';
+import { SimulationSnapshot } from './types/simulation';
 
 export const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<PageId>('overview');
+  
+  // SIMULATION_MODE setting (Enabled by default as required by specification)
+  const [isSimulationMode] = useState<boolean>(true);
+
+  // Simulation Engine State Subscription
+  const [simSnapshot, setSimSnapshot] = useState<SimulationSnapshot>(() => sharedSimulationEngine.getSnapshot());
+  const [simClock, setSimClock] = useState(() => sharedSimulationEngine.getClock());
+
+  useEffect(() => {
+    const unsubscribe = sharedSimulationEngine.subscribe((snapshot) => {
+      setSimSnapshot(snapshot);
+      setSimClock(sharedSimulationEngine.getClock());
+    });
+    return unsubscribe;
+  }, []);
+
+  // Map simulated satellites to application OrbitalObject schema
+  const simulatedOrbitalObjects = useMemo(() => {
+    return simSnapshot.satellites.map((s, idx) =>
+      simulatedSatelliteToOrbitalObject(s, idx, simSnapshot.satellites.length)
+    );
+  }, [simSnapshot.satellites]);
+
+  // Derived evidence gaps directly from active simulation state
+  const simulationGaps = useMemo(() => {
+    return deriveSimulationEvidenceGaps(simSnapshot);
+  }, [simSnapshot]);
+
+  // Fallback / historical real records
   const [celestrakManifest] = useState<PublicDataManifest>(celestrakSnapshot.manifest as PublicDataManifest);
   const [celestrakRecords] = useState<AuditedOmmRecord[]>(celestrakSnapshot.records as unknown as AuditedOmmRecord[]);
   const [satcatRecords] = useState<SatcatRecord[]>(satcatSnapshot.records as SatcatRecord[]);
   
-  // SATCAT lookup map joined by NORAD_CAT_ID
   const satcatMap = useMemo(() => {
     const map = new Map<number, SatcatRecord>();
     satcatRecords.forEach((s) => map.set(s.NORAD_CAT_ID, s));
     return map;
   }, [satcatRecords]);
 
-  // Single source of truth: 21 authentic CelesTrak OMM records enriched with SATCAT metadata
-  const initialSatellites = useMemo(() => {
+  const realSatellites = useMemo(() => {
     return celestrakRecords.map((rec, idx) =>
       ommRecordToOrbitalObject(rec, idx, celestrakRecords.length, satcatMap)
     );
   }, [celestrakRecords, satcatMap]);
 
-  const [satellites, setSatellites] = useState<OrbitalObject[]>(initialSatellites);
-  const [selectedSatelliteId, setSelectedSatelliteId] = useState<string>('NORAD-25544');
+  // When SIMULATION_MODE is active, use the authoritative simulated dataset
+  const satellites = isSimulationMode ? simulatedOrbitalObjects : realSatellites;
+  const [selectedSatelliteId, setSelectedSatelliteId] = useState<string>('SIM-000001');
   const [scenarios] = useState<AssessmentScenario[]>(DEMO_STABILITY_SCENARIOS);
   const [activeScenarioId, setActiveScenarioId] = useState<string>('SCN-DRAG-01');
-  const [evidenceGaps, setEvidenceGaps] = useState(DEMO_EVIDENCE_GAPS);
+
+  const evidenceGaps = isSimulationMode ? simulationGaps : deriveEvidenceGaps(celestrakRecords, realSatellites);
   const [evidenceTrace] = useState(DEMO_EVIDENCE_TRACE);
   const [freshnessChecks] = useState(DEMO_FRESHNESS_CHECKS);
-  const [auditLogs, setAuditLogs] = useState(DEMO_AUDIT_LOG);
+  const [auditLogs] = useState(DEMO_AUDIT_LOG);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [modalTargetSat, setModalTargetSat] = useState<OrbitalObject | null>(null);
@@ -80,7 +113,7 @@ export const App: React.FC = () => {
       desc: 'Real-time telemetry, radar projection, and uncertainty audit pipeline',
     },
     provenance: {
-      title: 'Data Provenance & Sensor Lineage',
+      title: 'Data Provenance & Lineage Auditor',
       desc: 'Source tracking catalogs, observation epochs, and cryptographic verification hashes',
     },
     stability: {
@@ -106,70 +139,23 @@ export const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Reset Demo Scenario to default parameters
+  // Reset Simulation Scenario to initial epoch and seed
   const handleResetDemo = () => {
-    setSatellites(initialSatellites);
-    setSelectedSatelliteId('NORAD-25544');
+    sharedSimulationEngine.reset();
+    setSelectedSatelliteId('SIM-000001');
     setActiveScenarioId('SCN-DRAG-01');
-    setEvidenceGaps(DEMO_EVIDENCE_GAPS);
     setSearchQuery('');
     showToast(
-      'DATA RESTORED TO REAL CELESTRAK OMM',
-      'All 21 CelesTrak orbital records reloaded. Verified baseline restored.'
+      'SIMULATION SCENARIO RESET',
+      'Simulation engine reset to initial seed epoch (2026-10-17 00:00:00 UTC). Authoritative state restored.'
     );
-  };
-
-  // Handle simulated evasive maneuver confirmation
-  const handleConfirmBurn = () => {
-    if (!modalTargetSat) return;
-    const targetId = modalTargetSat.id;
-
-    setSatellites((prev) =>
-      prev.map((sat) => {
-        if (sat.id === targetId) {
-          return {
-            ...sat,
-            riskLevel: 'Nominal',
-            color: '#35D39A',
-            missDistance: 5380,
-            poc: '< 1.0e-7',
-            pocValue: 0.00000008,
-            tca: 'RESOLVED (POST-BURN)',
-            status: 'Operational [Modeled ΔV: +2.4 m/s]',
-            auditVerdict: 'EVIDENCE VERIFIED',
-            verdictReason: 'Modeled avoidance burn verified clear; miss distance exceeds 5.3 km threshold.',
-          };
-        }
-        return sat;
-      })
-    );
-
-    // Append to audit log
-    const newLog = {
-      id: `EVT-${Date.now().toString().slice(-4)}`,
-      timestampUtc: new Date().toISOString().replace('T', ' ').substring(0, 19),
-      operator: 'OPERATOR-MANUAL',
-      action: 'SIMULATED_MANEUVER_BURN',
-      category: 'VERDICT_OVERRIDE' as const,
-      details: `Executed illustrative ΔV burn (+2.4 m/s) on ${modalTargetSat.name}. Projected miss distance 5,380m.`,
-    };
-    setAuditLogs((prev) => [newLog, ...prev]);
-
-    showToast(
-      'SIMULATED MANEUVER EXECUTED',
-      `Illustrative ΔV burn applied to ${modalTargetSat.name}. Projected miss distance increased to 5,380 m. Local state refreshed.`
-    );
-    setModalTargetSat(null);
   };
 
   // Handle sensor tasking simulation
   const handleTaskSensor = (gapId: string) => {
-    setEvidenceGaps((prev) =>
-      prev.map((gap) => (gap.id === gapId ? { ...gap, status: 'INVESTIGATING' } : gap))
-    );
     showToast(
-      'SENSOR TASKING DISPATCHED',
-      `High-priority tracking request sent to ISRO NETRA and European radar nodes for gap ${gapId}.`
+      'SIMULATED SENSOR TASKING DISPATCHED',
+      `Virtual tracking task scheduled across simulated ground radar network for gap ${gapId}.`
     );
   };
 
@@ -191,6 +177,7 @@ export const App: React.FC = () => {
       {currentPage === 'overview' && (
         <OverviewPage
           satellites={satellites}
+          simSatellites={simSnapshot.satellites}
           selectedSatellite={selectedSatellite}
           onSelectSatellite={(sat) => setSelectedSatelliteId(sat.id)}
           scenarios={scenarios}
@@ -204,6 +191,18 @@ export const App: React.FC = () => {
             const sat = satellites.find((s) => s.id === satId);
             if (sat) setModalTargetSat(sat);
           }}
+          isSimPlaying={simClock.isPlaying}
+          onToggleSimPlay={() => {
+            if (simClock.isPlaying) {
+              sharedSimulationEngine.pause();
+            } else {
+              sharedSimulationEngine.start();
+            }
+          }}
+          simSpeed={simClock.speedMultiplier}
+          onSetSimSpeed={(spd) => sharedSimulationEngine.setSpeed(spd)}
+          onResetSimClock={() => sharedSimulationEngine.reset()}
+          currentSimUtc={simSnapshot.timestampUtc}
         />
       )}
 
@@ -264,11 +263,10 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* Maneuver Confirmation Modal */}
-      <ManeuverModal
+      {/* Forensic Audit Dossier Modal */}
+      <AuditDossierModal
         isOpen={Boolean(modalTargetSat)}
         onClose={() => setModalTargetSat(null)}
-        onConfirm={handleConfirmBurn}
         targetSatellite={modalTargetSat}
       />
     </AppShell>

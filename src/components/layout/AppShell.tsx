@@ -37,7 +37,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-[#050914] text-[#edf4ff] font-sans overflow-x-hidden">
+    <div className="flex min-h-screen bg-[#050914] text-[#edf4ff] font-sans overflow-x-hidden pt-12">
       {/* Sidebar Navigation */}
       <Sidebar
         currentPage={currentPage}
