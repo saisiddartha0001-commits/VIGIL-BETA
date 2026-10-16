@@ -1,0 +1,12 @@
+{
+  "sourceName": "CelesTrak General Perturbations (GP) Orbit Elements",
+  "exactUrl": "https://celestrak.org/NORAD/elements/gp.php?GROUP=STATIONS&FORMAT=JSON",
+  "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+  "recordCount": 21,
+  "contentType": "application/json; charset=UTF-8",
+  "httpStatus": 200,
+  "sha256": "a27b24b99d40137b787b257cd7f72f69ef476d238ed2cc685039668a48b39e91",
+  "isCached": false,
+  "cachingPolicy": "2-hour GP element update window (celestrak.org/usage-policy.php)",
+  "nextRecommendedRefreshUtc": "2026-10-16T11:22:29.135Z"
+}

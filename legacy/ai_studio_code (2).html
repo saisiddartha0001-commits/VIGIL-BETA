@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VIGIL // Space Situational Awareness - SHOURYA '26</title>
+  
+  <!-- Inter & JetBrains Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            space: {
+              base: '#050914',
+              sidebar: '#080F1D',
+              card: '#0B1424',
+              elevated: '#101C30',
+              border: 'rgba(91, 160, 190, 0.18)',
+              borderHover: 'rgba(56, 217, 245, 0.35)',
+              cyan: '#38D9F5',
+              blue: '#528BFF',
+              safe: '#35D39A',
+              warning: '#FFBE55',
+              threat: '#FF536B',
+              textPrimary: '#EDF4FF',
+              textSecondary: '#91A2B9',
+              textMuted: '#61738C'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- React 18, ReactDOM & Babel CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+    body {
+      background-color: #050914;
+      color: #EDF4FF;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* Technical scrollbars */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #050914;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #101C30;
+      border: 1px solid rgba(91, 160, 190, 0.2);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #38D9F5;
+    }
+    /* Restrained atmospheric scanline texture */
+    .bg-radar-grid {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(91, 160, 190, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(91, 160, 190, 0.04) 1px, transparent 1px);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-space-base text-space-textPrimary min-h-screen selection:bg-space-cyan/30 selection:text-space-cyan">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+    // --- INLINE TECHNICAL SVG ICONS ---
+    const IconLogoOrbit = () => (
+      <svg className="w-5 h-5 text-space-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <circle cx="12" cy="12" r="3.5" fill="#38D9F5" fillOpacity="0.25" stroke="#38D9F5" />
+        <ellipse cx="12" cy="12" rx="9.5" ry="4.5" transform="rotate(-30 12 12)" stroke="currentColor" strokeDasharray="2 2" />
+        <ellipse cx="12" cy="12" rx="9.5" ry="4.5" transform="rotate(30 12 12)" stroke="currentColor" />
+      </svg>
+    );
+
+    const IconDashboard = () => (
+      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <rect x="3" y="3" width="7" height="9" rx="1.5" />
+        <rect x="14" y="3" width="7" height="5" rx="1.5" />
+        <rect x="14" y="12" width="7" height="9" rx="1.5" />
+        <rect x="3" y="16" width="7" height="5" rx="1.5" />
+      </svg>
+    );
+
+    const IconCatalog = () => (
+      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <circle cx="12" cy="12" r="8.5" stroke="currentColor" />
+        <path d="M12 3.5v17M3.5 12h17" stroke="currentColor" strokeOpacity="0.4" />
+        <circle cx="12" cy="7" r="1.5" fill="currentColor" />
+        <circle cx="17" cy="14" r="1.5" fill="currentColor" />
+        <circle cx="7" cy="15" r="1.5" fill="currentColor" />
+      </svg>
+    );
+
+    const IconAlertTriangle = () => (
+      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+        <line x1="12" y1="9" x2="12" y2="13" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
+      </svg>
+    );
+
+    const IconFlame = () => (
+      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+      </svg>
+    );
+
+    const IconSearch = () => (
+      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="11" cy="11" r="7" />
+        <line x1="21" y1="21" x2="16.5" y2="16.5" />
+      </svg>
+    );
+
+    const IconCrosshair = () => (
+      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <circle cx="12" cy="12" r="9" />
+        <line x1="12" y1="3" x2="12" y2="7" />
+        <line x1="12" y1="17" x2="12" y2="21" />
+        <line x1="3" y1="12" x2="7" y2="12" />
+        <line x1="17" y1="12" x2="21" y2="12" />
+      </svg>
+    );
+
+    const IconRefresh = () => (
+      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
+        <path d="M21 3v5h-5" />
+        <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
+        <path d="M3 21v-5h5" />
+      </svg>
+    );
+
+    const IconShieldCheck = () => (
+      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        <path d="m9 12 2 2 4-4" />
+      </svg>
+    );
+
+    const IconLayers = () => (
+      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <polygon points="12 2 2 7 12 12 22 7 12 2" />
+        <polyline points="2 17 12 22 22 17" />
+        <polyline points="2 12 12 17 22 12" />
+      </svg>
+    );
+
+    const IconMenu = () => (
+      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <line x1="3" y1="12" x2="21" y2="12" />
+        <line x1="3" y1="6" x2="21" y2="6" />
+        <line x1="3" y1="18" x2="21" y2="18" />
+      </svg>
+    );
+
+    const IconClose = () => (
+      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    );
+
+    // --- BASELINE SIMULATED SATELLITE DATASET (SHOURYA '26 - VYOM) ---
+    const INITIAL_SATELLITES = [
+      {
+        id: 'SAT-VYOM-01',
+        name: 'VYOM-SENTINEL-1',
+        noradId: 88401,
+        regime: 'LEO',
+        altitude: 540,
+        velocity: 7.59,
+        inclination: 97.4,
+        status: 'Operational',
+        riskLevel: 'Critical',
+        operator: 'INDR-DEF',
+        conjunctionTarget: 'DEB-COSMOS-1408',
+        missDistance: 124,
+        poc: '3.42e-3',
+        tca: '02h 14m 10s',
+        color: '#FF536B',
+        speed: 0.009,
+        angle: 0.8,
+        radiusRatio: 0.38
+      },
+      {
+        id: 'SAT-SHOURYA-02',
+        name: 'SHOURYA-TECH-OBS',
+        noradId: 88402,
+        regime: 'LEO',
+        altitude: 680,
+        velocity: 7.51,
+        inclination: 45.0,
+        status: 'Operational',
+        riskLevel: 'Elevated',
+        operator: 'VYOM-LABS',
+        conjunctionTarget: 'CZ-4C R/B FRAG',
+        missDistance: 480,
+        poc: '7.12e-5',
+        tca: '05h 41m 22s',
+        color: '#FFBE55',
+        speed: 0.007,
+        angle: 2.1,
+        radiusRatio: 0.45
+      },
+      {
+        id: 'SAT-AETHEL-03',
+        name: 'AETHEL-GEOCOMM-4',
+        noradId: 88403,
+        regime: 'GEO',
+        altitude: 35786,
+        velocity: 3.07,
+        inclination: 0.04,
+        status: 'Operational',
+        riskLevel: 'Nominal',
+        operator: 'PAN-ISRO ALLIANCE',
+        conjunctionTarget: 'NONE',
+        missDistance: 12400,
+        poc: '< 1e-7',
+        tca: 'N/A',
+        color: '#35D39A',
+        speed: 0.0018,
+        angle: 4.2,
+        radiusRatio: 0.88
+      },
+      {
+        id: 'SAT-SURYA-04',
+        name: 'SURYA-WEATHER-9',
+        noradId: 88404,
+        regime: 'MEO',
+        altitude: 20200,
+        velocity: 3.87,
+        inclination: 55.2,
+        status: 'Operational',
+        riskLevel: 'Nominal',
+        operator: 'MET-AGENCY',
+        conjunctionTarget: 'NONE',
+        missDistance: 8900,
+        poc: '< 1e-7',
+        tca: 'N/A',
+        color: '#35D39A',
+        speed: 0.0035,
+        angle: 5.5,
+        radiusRatio: 0.65
+      },
+      {
+        id: 'DEB-COSMOS-1408',
+        name: 'DEB-COSMOS-1408',
+        noradId: 92014,
+        regime: 'LEO',
+        altitude: 538,
+        velocity: 7.60,
+        inclination: 82.5,
+        status: 'Derelict Debris',
+        riskLevel: 'Critical',
+        operator: 'UNTRACKED-SRC',
+        conjunctionTarget: 'VYOM-SENTINEL-1',
+        missDistance: 124,
+        poc: '3.42e-3',
+        tca: '02h 14m 10s',
+        color: '#FF536B',
+        speed: 0.0092,
+        angle: 0.82,
+        radiusRatio: 0.38
+      },
+      {
+        id: 'SAT-NAV-05',
+        name: 'NAVIK-CONSTELL-7',
+        noradId: 88407,
+        regime: 'MEO',
+        altitude: 23222,
+        velocity: 3.65,
+        inclination: 29.0,
+        status: 'Operational',
+        riskLevel: 'Nominal',
+        operator: 'INDR-NAV',
+        conjunctionTarget: 'NONE',
+        missDistance: 18400,
+        poc: '< 1e-8',
+        tca: 'N/A',
+        color: '#35D39A',
+        speed: 0.003,
+        angle: 3.2,
+        radiusRatio: 0.72
+      }
+    ];
+
+    // --- REUSABLE BADGE COMPONENT ---
+    function RiskBadge({ level, size = 'sm' }) {
+      const sizeClasses = size === 'xs' ? 'px-1.5 py-0.5 text-[10px]' : 'px-2 py-0.5 text-xs';
+      if (level === 'Critical') {
+        return (
+          <span className={`inline-flex items-center gap-1.5 font-mono font-semibold rounded border border-space-threat/40 bg-space-threat/10 text-space-threat ${sizeClasses}`}>
+            <span className="w-1.5 h-1.5 rounded-full bg-space-threat animate-pulse" />
+            CRITICAL
+          </span>
+        );
+      }
+      if (level === 'Elevated') {
+        return (
+          <span className={`inline-flex items-center gap-1.5 font-mono font-medium rounded border border-space-warning/40 bg-space-warning/10 text-space-warning ${sizeClasses}`}>
+            <span className="w-1.5 h-1.5 rounded-full bg-space-warning" />
+            ELEVATED
+          </span>
+        );
+      }
+      return (
+        <span className={`inline-flex items-center gap-1.5 font-mono font-medium rounded border border-space-safe/30 bg-space-safe/10 text-space-safe ${sizeClasses}`}>
+          <span className="w-1.5 h-1.5 rounded-full bg-space-safe" />
+          NOMINAL
+        </span>
+      );
+    }
+
+    // --- CONFIRMATION DIALOG MODAL ---
+    function ConfirmationModal({ isOpen, onClose, onConfirm, targetSatellite }) {
+      if (!isOpen || !targetSatellite) return null;
+
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-space-base/80 backdrop-blur-sm">
+          <div className="w-full max-w-md bg-space-card border border-space-threat/50 rounded-xl p-6 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-space-threat via-space-warning to-space-threat" />
+            
+            <div className="flex items-start gap-4 mb-4">
+              <div className="p-2.5 rounded-lg bg-space-threat/10 border border-space-threat/30 text-space-threat">
+                <IconFlame />
+              </div>
+              <div>
+                <h3 className="text-base font-semibold text-space-textPrimary">Confirm Simulated ΔV Maneuver</h3>
+                <p className="text-xs text-space-textSecondary mt-0.5">Execution authorization for collision avoidance vector</p>
+              </div>
+            </div>
+
+            <div className="p-3.5 bg-space-elevated/70 border border-space-border rounded-lg text-xs font-mono space-y-2 mb-4">
+              <div className="flex justify-between">
+                <span className="text-space-textMuted">TARGET ASSET:</span>
+                <span className="text-space-textPrimary font-semibold">{targetSatellite.name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-space-textMuted">CONJUNCTION THREAT:</span>
+                <span className="text-space-threat font-semibold">{targetSatellite.conjunctionTarget}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-space-textMuted">MODELLED THRUST DELTA:</span>
+                <span className="text-space-cyan font-semibold">+2.40 m/s (Prograde)</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-space-textMuted">PROJECTED MISS DISTANCE:</span>
+                <span className="text-space-safe font-semibold">&gt; 5,300 meters</span>
+              </div>
+            </div>
+
+            <p className="text-[11px] text-space-textMuted mb-6 leading-relaxed">
+              <span className="text-space-warning font-semibold">DISCLAIMER:</span> This action updates simulated internal state only. No live RF commands or spacecraft command links are initiated.
+            </p>
+
+            <div className="flex items-center justify-end gap-3 font-mono text-xs">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 rounded-lg border border-space-border text-space-textSecondary hover:text-space-textPrimary hover:bg-space-elevated transition-colors"
+              >
+                ABORT
+              </button>
+              <button
+                type="button"
+                onClick={onConfirm}
+                className="px-4 py-2 rounded-lg bg-space-threat hover:bg-space-threat/90 text-white font-semibold transition-all shadow-[0_0_15px_rgba(255,83,107,0.4)] flex items-center gap-2"
+              >
+                <IconFlame />
+                <span>CONFIRM BURN</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // --- MAIN APPLICATION SHELL ---
+    function App() {
+      const [currentPage, setCurrentPage] = useState('overview'); // 'overview' | 'satellites' | 'alerts'
+      const [satellites, setSatellites] = useState(INITIAL_SATELLITES);
+      const [selectedSatelliteId, setSelectedSatelliteId] = useState('SAT-VYOM-01');
+      const [systemTime, setSystemTime] = useState(() => new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC');
+      const [toastMessage, setToastMessage] = useState(null);
+      const [modalTargetSat, setModalTargetSat] = useState(null);
+      const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+      // Search & Filters for Catalog
+      const [catalogSearch, setCatalogSearch] = useState('');
+      const [regimeFilter, setRegimeFilter] = useState('ALL');
+      const [riskFilter, setRiskFilter] = useState('ALL');
+
+      // Live UTC clock (cosmetic clock)
+      useEffect(() => {
+        const timer = setInterval(() => {
+          setSystemTime(new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC');
+        }, 1000);
+        return () => clearInterval(timer);
+      }, []);
+
+      const selectedSatellite = useMemo(() => {
+        return satellites.find(s => s.id === selectedSatelliteId) || satellites[0];
+      }, [satellites, selectedSatelliteId]);
+
+      // Dynamic statistics calculations
+      const stats = useMemo(() => {
+        const total = satellites.length;
+        const operational = satellites.filter(s => s.status.toLowerCase().includes('operational')).length;
+        const critical = satellites.filter(s => s.riskLevel === 'Critical').length;
+        const elevated = satellites.filter(s => s.riskLevel === 'Elevated').length;
+
+        const breakdown = {
+          LEO: satellites.filter(s => s.regime === 'LEO').length,
+          MEO: satellites.filter(s => s.regime === 'MEO').length,
+          GEO: satellites.filter(s => s.regime === 'GEO').length
+        };
+
+        return { total, operational, critical, elevated, breakdown };
+      }, [satellites]);
+
+      // Request Burn (Opens Modal)
+      const handleRequestBurn = (satId) => {
+        const target = satellites.find(s => s.id === satId);
+        if (target) {
+          setModalTargetSat(target);
+        }
+      };
+
+      // Confirm & Execute Burn
+      const handleConfirmBurn = () => {
+        if (!modalTargetSat) return;
+        const targetId = modalTargetSat.id;
+
+        setSatellites(prev => prev.map(sat => {
+          if (sat.id === targetId) {
+            return {
+              ...sat,
+              riskLevel: 'Nominal',
+              color: '#35D39A',
+              missDistance: 5380,
+              poc: '< 1.0e-7',
+              tca: 'RESOLVED (POST-BURN)',
+              status: 'Operational [Simulated ΔV: +2.4 m/s]'
+            };
+          }
+          return sat;
+        }));
+
+        setToastMessage({
+          title: 'SIMULATED MANEUVER EXECUTED',
+          body: `Illustrative ΔV burn applied to ${modalTargetSat.name}. Modeled miss distance increased to 5,380 m. Local state refreshed.`
+        });
+        setModalTargetSat(null);
+
+        setTimeout(() => setToastMessage(null), 5000);
+      };
+
+      // Reset Simulation to default
+      const handleResetSimulation = () => {
+        setSatellites(INITIAL_SATELLITES);
+        setSelectedSatelliteId('SAT-VYOM-01');
+        setToastMessage({
+          title: 'SIMULATION RESET COMPLETE',
+          body: 'All orbital states, threat vectors, and conjunction scenarios restored to baseline parameters.'
+        });
+        setTimeout(() => setToastMessage(null), 4000);
+      };
+
+      // Filtered catalog list
+      const filteredSatellites = useMemo(() => {
+        return satellites.filter(sat => {
+          const matchQuery = sat.name.toLowerCase().includes(catalogSearch.toLowerCase()) ||
+                             sat.id.toLowerCase().includes(catalogSearch.toLowerCase()) ||
+                             sat.operator.toLowerCase().includes(catalogSearch.toLowerCase());
+          const matchRegime = regimeFilter === 'ALL' || sat.regime === regimeFilter;
+          const matchRisk = riskFilter === 'ALL' || sat.riskLevel === riskFilter;
+          return matchQuery && matchRegime && matchRisk;
+        });
+      }, [satellites, catalogSearch, regimeFilter, riskFilter]);
+
+      // Active conjunction threat items
+      const alertItems = useMemo(() => {
+        return satellites.filter(s => s.riskLevel === 'Critical' || s.riskLevel === 'Elevated');
+      }, [satellites]);
+
+      const navItems = [
+        { id: 'overview', label: 'Overview HUD', icon: IconDashboard, badge: null },
+        { id: 'satellites', label: 'Orbital Catalog', icon: IconCatalog, badge: stats.total },
+        { id: 'alerts', label: 'Conjunction Alerts', icon: IconAlertTriangle, badge: stats.critical + stats.elevated }
+      ];
+
+      return (
+        <div className="flex flex-col md:flex-row min-h-screen bg-space-base text-space-textPrimary font-sans">
+          
+          {/* ================= LEFT SIDEBAR ================= */}
+          <aside className="hidden md:flex w-[260px] flex-col justify-between shrink-0 bg-space-sidebar border-r border-space-border p-4 z-20">
+            <div>
+              {/* Brand Header */}
+              <div className="pb-4 border-b border-space-border">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-space-card border border-space-border">
+                    <IconLogoOrbit />
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold tracking-wider text-space-textPrimary flex items-center gap-2">
+                      <span>VIGIL</span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-space-elevated border border-space-cyan/30 text-space-cyan">v2.6</span>
+                    </div>
+                    <div className="text-[11px] text-space-cyan font-mono tracking-wider">SHOURYA '26 // VYOM</div>
+                  </div>
+                </div>
+                <div className="mt-3 text-[10px] font-mono text-space-textMuted tracking-wider uppercase bg-space-card/60 px-2.5 py-1.5 rounded border border-space-border/60">
+                  Space Situational Awareness
+                </div>
+              </div>
+
+              {/* Navigation Menu */}
+              <nav className="mt-5 space-y-1.5" aria-label="Main Navigation">
+                {navItems.map((item) => {
+                  const active = currentPage === item.id;
+                  const Icon = item.icon;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setCurrentPage(item.id)}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs tracking-wide font-medium transition-all ${
+                        active
+                          ? 'bg-space-cyan/15 text-space-cyan border border-space-cyan/30 shadow-[0_0_12px_rgba(56,217,245,0.12)] font-semibold'
+                          : 'text-space-textSecondary hover:text-space-textPrimary hover:bg-space-elevated/60'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <Icon />
+                        <span>{item.label}</span>
+                      </div>
+                      {item.badge !== null && (
+                        <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-semibold ${
+                          item.id === 'alerts' && (stats.critical + stats.elevated) > 0
+                            ? 'bg-space-threat/20 text-space-threat border border-space-threat/30'
+                            : 'bg-space-elevated text-space-textSecondary border border-space-border'
+                        }`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </nav>
+
+              {/* Quick Actions */}
+              <div className="mt-6 pt-4 border-t border-space-border">
+                <span className="text-[10px] font-mono text-space-textMuted tracking-wider uppercase block mb-2">Sim Controls</span>
+                <button
+                  onClick={handleResetSimulation}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-mono text-space-textSecondary hover:text-space-textPrimary bg-space-elevated border border-space-border hover:border-space-borderHover transition-all"
+                >
+                  <IconRefresh />
+                  <span>RESET SCENARIO</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Bottom Status & Educational Notice */}
+            <div className="pt-4 border-t border-space-border space-y-3 font-mono text-[11px]">
+              <div className="flex justify-between items-center text-space-textSecondary">
+                <span className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-space-safe animate-pulse" />
+                  SIM ENGINE:
+                </span>
+                <span className="text-space-safe font-semibold">NOMINAL</span>
+              </div>
+              <div className="p-2.5 bg-space-card rounded-lg border border-space-warning/25 text-space-textMuted text-[10px] leading-relaxed">
+                <span className="text-space-warning font-semibold">ACADEMIC NOTICE:</span> Illustrative telemetry prototype for SHOURYA ’26. No live spacecraft command authority.
+              </div>
+            </div>
+          </aside>
+
+          {/* ================= MOBILE NAV DRAWER ================= */}
+          <div className="md:hidden flex items-center justify-between p-3 bg-space-sidebar border-b border-space-border z-30">
+            <div className="flex items-center gap-2">
+              <IconLogoOrbit />
+              <span className="font-bold tracking-wide text-space-textPrimary text-sm">VIGIL // VYOM</span>
+            </div>
+            <button
+              onClick={() => setMobileNavOpen(!mobileNavOpen)}
+              className="p-1.5 rounded-lg border border-space-border text-space-textSecondary hover:text-space-textPrimary"
+            >
+              {mobileNavOpen ? <IconClose /> : <IconMenu />}
+            </button>
+          </div>
+
+          {mobileNavOpen && (
+            <div className="md:hidden bg-space-sidebar border-b border-space-border p-4 space-y-2 z-30">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setCurrentPage(item.id);
+                    setMobileNavOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs ${
+                    currentPage === item.id ? 'bg-space-cyan/20 text-space-cyan font-semibold' : 'text-space-textSecondary'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <item.icon />
+                    <span>{item.label}</span>
+                  </div>
+                  {item.badge !== null && (
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-space-elevated">{item.badge}</span>
+                  )}
+                </button>
+              ))}
+              <button
+                onClick={() => {
+                  handleResetSimulation();
+                  setMobileNavOpen(false);
+                }}
+                className="w-full mt-2 py-2 text-xs font-mono text-center border border-space-border rounded-lg text-space-textSecondary"
+              >
+                Reset Scenario
+              </button>
+            </div>
+          )}
+
+          {/* ================= MAIN CONTENT WRAPPER ================= */}
+          <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+            {/* Top Status Bar */}
+            <header className="h-14 border-b border-space-border bg-space-card/70 backdrop-blur-md px-4 md:px-6 flex items-center justify-between text-xs font-mono shrink-0 z-10">
+              <div className="flex items-center gap-3">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-space-cyan opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-space-cyan"></span>
+                </span>
+                <span className="text-space-cyan tracking-wide font-medium">UTC: {systemTime}</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <span className="hidden sm:inline-block px-2.5 py-1 rounded text-[10px] font-medium bg-space-elevated border border-space-border text-space-textSecondary">
+                  HACKATHON DEMO HARNESS
+                </span>
+                <span className="px-2.5 py-1 rounded text-[10px] font-semibold bg-space-cyan/10 border border-space-cyan/30 text-space-cyan">
+                  SIMULATION MODE
+                </span>
+              </div>
+            </header>
+
+            {/* Main Interactive Views */}
+            <main className="flex-1 p-4 md:p-6 overflow-y-auto space-y-6">
+              {currentPage === 'overview' && (
+                <OverviewView 
+                  satellites={satellites}
+                  selectedSatellite={selectedSatellite}
+                  stats={stats}
+                  onSelectSatellite={(sat) => setSelectedSatelliteId(sat.id)}
+                  onRequestBurn={handleRequestBurn}
+                  onViewAlerts={() => setCurrentPage('alerts')}
+                />
+              )}
+
+              {currentPage === 'satellites' && (
+                <CatalogView 
+                  satellites={filteredSatellites}
+                  totalTracked={stats.total}
+                  selectedSatellite={selectedSatellite}
+                  onSelectSatellite={(sat) => setSelectedSatelliteId(sat.id)}
+                  catalogSearch={catalogSearch}
+                  setCatalogSearch={setCatalogSearch}
+                  regimeFilter={regimeFilter}
+                  setRegimeFilter={setRegimeFilter}
+                  riskFilter={riskFilter}
+                  setRiskFilter={setRiskFilter}
+                  onRequestBurn={handleRequestBurn}
+                  onSwitchToOverview={() => setCurrentPage('overview')}
+                />
+              )}
+
+              {currentPage === 'alerts' && (
+                <AlertsView 
+                  alertItems={alertItems}
+                  selectedSatellite={selectedSatellite}
+                  onSelectSatellite={(sat) => setSelectedSatelliteId(sat.id)}
+                  onRequestBurn={handleRequestBurn}
+                  onSwitchToOverview={() => setCurrentPage('overview')}
+                />
+              )}
+            </main>
+          </div>
+
+          {/* ================= MODAL & TOAST ================= */}
+          <ConfirmationModal 
+            isOpen={Boolean(modalTargetSat)}
+            onClose={() => setModalTargetSat(null)}
+            onConfirm={handleConfirmBurn}
+            targetSatellite={modalTargetSat}
+          />
+
+          {toastMessage && (
+            <div className="fixed bottom-5 right-5 z-50 max-w-sm p-4 bg-space-card border border-space-cyan/50 rounded-xl shadow-[0_0_30px_rgba(56,217,245,0.2)] text-xs font-mono transition-all">
+              <div className="flex items-center justify-between pb-1.5 border-b border-space-border mb-2">
+                <span className="text-space-cyan font-bold tracking-wider">{toastMessage.title}</span>
+                <button 
+                  onClick={() => setToastMessage(null)} 
+                  className="text-space-textMuted hover:text-white ml-2 text-sm"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="text-space-textSecondary leading-relaxed text-[11px]">{toastMessage.body}</div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ==========================================
+    // PAGE 1: OVERVIEW HUD (HERO DASHBOARD)
+    // ==========================================
+    function OverviewView({ satellites, selectedSatellite, stats, onSelectSatellite, onRequestBurn, onViewAlerts }) {
+      return (
+        <div className="space-y-6">
+          {/* Header Title & Subtitle */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-2">
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold tracking-tight text-space-textPrimary">Orbital Situational Awareness</h1>
+              <p className="text-xs text-space-textSecondary mt-0.5">Space object tracking, orbital telemetry and conjunction risk monitoring.</p>
+            </div>
+            <div className="flex items-center gap-2 text-xs font-mono text-space-textMuted">
+              <span className="w-1.5 h-1.5 rounded-full bg-space-cyan" />
+              <span>ORBIT PROPAGATION: SGP4 SIMULATED</span>
+            </div>
+          </div>
+
+          {/* 4 KPI Metric Cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 font-mono">
+            {/* Card 1: Tracked Objects */}
+            <div className="p-4 bg-space-card border border-space-border rounded-xl">
+              <div className="flex items-center justify-between text-space-textSecondary mb-1.5">
+                <span className="text-[11px] font-semibold tracking-wider uppercase">OBJECTS TRACKED</span>
+                <IconCatalog />
+              </div>
+              <div className="text-2xl font-bold text-space-textPrimary">{stats.total}</div>
+              <div className="text-[10px] text-space-textMuted mt-1">
+                LEO: {stats.breakdown.LEO} | MEO: {stats.breakdown.MEO} | GEO: {stats.breakdown.GEO}
+              </div>
+            </div>
+
+            {/* Card 2: Operational Assets */}
+            <div className="p-4 bg-space-card border border-space-border rounded-xl">
+              <div className="flex items-center justify-between text-space-textSecondary mb-1.5">
+                <span className="text-[11px] font-semibold tracking-wider uppercase">OPERATIONAL ASSETS</span>
+                <IconShieldCheck />
+              </div>
+              <div className="text-2xl font-bold text-space-safe">{stats.operational} ONLINE</div>
+              <div className="text-[10px] text-space-textMuted mt-1">FLEET STABILITY NOMINAL</div>
+            </div>
+
+            {/* Card 3: Critical Conjunctions */}
+            <div className={`p-4 bg-space-card rounded-xl border transition-colors ${
+              stats.critical > 0 ? 'border-space-threat/40 bg-space-threat/5' : 'border-space-border'
+            }`}>
+              <div className="flex items-center justify-between text-space-textSecondary mb-1.5">
+                <span className="text-[11px] font-semibold tracking-wider uppercase">CRITICAL CONJUNCTIONS</span>
+                <IconAlertTriangle />
+              </div>
+              <div className={`text-2xl font-bold ${stats.critical > 0 ? 'text-space-threat' : 'text-space-safe'}`}>
+                {stats.critical} EVENTS
+              </div>
+              <div className="text-[10px] text-space-textMuted mt-1">MISS DISTANCE &lt; 200m</div>
+            </div>
+
+            {/* Card 4: Elevated Warnings */}
+            <div className="p-4 bg-space-card border border-space-border rounded-xl">
+              <div className="flex items-center justify-between text-space-textSecondary mb-1.5">
+                <span className="text-[11px] font-semibold tracking-wider uppercase">ELEVATED WARNINGS</span>
+                <IconLayers />
+              </div>
+              <div className="text-2xl font-bold text-space-warning">{stats.elevated} WATCHES</div>
+              <div className="text-[10px] text-space-textMuted mt-1">TCA WITHIN 12 HOURS</div>
+            </div>
+          </div>
+
+          {/* Main Visualization Grid: Radar (8 Cols) + Telemetry (4 Cols) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            {/* Centerpiece 2D Canvas Radar */}
+            <div className="lg:col-span-8 bg-space-card border border-space-border rounded-xl p-4 flex flex-col justify-between relative overflow-hidden">
+              <div className="flex flex-wrap items-center justify-between pb-3 border-b border-space-border gap-2 font-mono">
+                <div className="flex items-center gap-2">
+                  <IconCrosshair />
+                  <span className="text-xs font-semibold text-space-cyan tracking-wider uppercase">
+                    POLAR ORBIT VISUALIZATION (2D POLAR PROJECTION)
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-[10px]">
+                  <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-space-safe"></span> NOMINAL</span>
+                  <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-space-warning"></span> ELEVATED</span>
+                  <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-space-threat animate-pulse"></span> CRITICAL</span>
+                </div>
+              </div>
+
+              {/* Canvas viewport container */}
+              <div className="relative w-full h-[400px] my-3 bg-[#030712] rounded-lg overflow-hidden border border-space-border/60 bg-radar-grid flex items-center justify-center">
+                <RadarCanvas 
+                  satellites={satellites}
+                  selectedSatellite={selectedSatellite}
+                  onSelectSatellite={onSelectSatellite}
+                />
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between pt-2 border-t border-space-border text-[10px] font-mono text-space-textMuted">
+                <span>RADAR BOUNDARY: 42,164 KM (GEOSTATIONARY REACH)</span>
+                <span>INTERACTIVE: CLICK ANY SATELLITE TO INSPECT</span>
+              </div>
+            </div>
+
+            {/* Selected Satellite Telemetry Inspector */}
+            <div className="lg:col-span-4 bg-space-card border border-space-border rounded-xl p-5 flex flex-col justify-between font-mono">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-space-border">
+                  <span className="text-xs font-semibold text-space-cyan tracking-wider">TELEMETRY LOCK</span>
+                  <RiskBadge level={selectedSatellite.riskLevel} />
+                </div>
+
+                {/* Section 1: Object Identity */}
+                <div>
+                  <div className="text-[10px] text-space-textMuted uppercase tracking-wider">OBJECT IDENTITY</div>
+                  <div className="text-base font-bold text-space-textPrimary mt-0.5">{selectedSatellite.name}</div>
+                  <div className="text-xs text-space-textSecondary mt-0.5">
+                    NORAD: #{selectedSatellite.noradId} | ORG: {selectedSatellite.operator}
+                  </div>
+                </div>
+
+                {/* Section 2: Orbital Parameters */}
+                <div className="pt-3 border-t border-space-border/60 space-y-2">
+                  <div className="text-[10px] text-space-textMuted uppercase tracking-wider mb-1">ORBITAL PARAMETERS</div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="p-2 bg-space-elevated/60 rounded border border-space-border/40">
+                      <span className="text-[10px] text-space-textMuted block">REGIME</span>
+                      <span className="font-semibold text-space-cyan">{selectedSatellite.regime}</span>
+                    </div>
+                    <div className="p-2 bg-space-elevated/60 rounded border border-space-border/40">
+                      <span className="text-[10px] text-space-textMuted block">ALTITUDE</span>
+                      <span className="font-semibold text-space-textPrimary">{selectedSatellite.altitude.toLocaleString()} km</span>
+                    </div>
+                    <div className="p-2 bg-space-elevated/60 rounded border border-space-border/40">
+                      <span className="text-[10px] text-space-textMuted block">VELOCITY</span>
+                      <span className="font-semibold text-space-textPrimary">{selectedSatellite.velocity} km/s</span>
+                    </div>
+                    <div className="p-2 bg-space-elevated/60 rounded border border-space-border/40">
+                      <span className="text-[10px] text-space-textMuted block">INCLINATION</span>
+                      <span className="font-semibold text-space-textPrimary">{selectedSatellite.inclination}°</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 3: Conjunction Assessment */}
+                <div className="p-3 bg-space-elevated/70 border border-space-border rounded-lg space-y-2 text-xs">
+                  <div className="text-[10px] font-semibold text-space-textMuted uppercase tracking-wider">CONJUNCTION ASSESSMENT</div>
+                  {selectedSatellite.conjunctionTarget !== 'NONE' ? (
+                    <>
+                      <div className="flex justify-between">
+                        <span className="text-space-textSecondary">Secondary Object:</span>
+                        <span className="text-space-threat font-semibold">{selectedSatellite.conjunctionTarget}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-space-textSecondary">Miss Distance:</span>
+                        <span className={`font-semibold ${selectedSatellite.missDistance < 200 ? 'text-space-threat' : 'text-space-warning'}`}>
+                          {selectedSatellite.missDistance.toLocaleString()} m
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-space-textSecondary">Collision Prob (PoC):</span>
+                        <span className="text-space-warning font-semibold">{selectedSatellite.poc}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-space-textSecondary">TCA Vector:</span>
+                        <span className="text-space-cyan font-semibold">{selectedSatellite.tca}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="py-2 text-center text-space-safe text-xs font-semibold">
+                      ✓ No active conjunction warnings. Orbit verified nominal.
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Button */}
+              <div className="pt-4 border-t border-space-border mt-4">
+                {selectedSatellite.riskLevel === 'Critical' ? (
+                  <button
+                    onClick={() => onRequestBurn(selectedSatellite.id)}
+                    className="w-full py-2.5 bg-space-threat hover:bg-space-threat/90 active:scale-[0.99] text-white rounded-lg text-xs font-semibold uppercase tracking-wider shadow-[0_0_15px_rgba(255,83,107,0.35)] flex items-center justify-center gap-2 transition-all"
+                  >
+                    <IconFlame />
+                    <span>SIMULATE EVASIVE BURN</span>
+                  </button>
+                ) : (
+                  <button
+                    disabled
+                    className="w-full py-2.5 bg-space-elevated text-space-textMuted rounded-lg text-xs font-medium uppercase tracking-wider cursor-not-allowed border border-space-border/60"
+                  >
+                    TRAJECTORY NOMINAL (NO BURN REQ)
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Conjunction Assessment Table */}
+          <div className="bg-space-card border border-space-border rounded-xl p-4 md:p-5 font-mono">
+            <div className="flex flex-wrap items-center justify-between pb-3 border-b border-space-border gap-2 mb-3">
+              <span className="text-xs font-semibold text-space-cyan tracking-wider uppercase">
+                ACTIVE CONJUNCTION ASSESSMENT LOG
+              </span>
+              <button 
+                onClick={onViewAlerts} 
+                className="text-xs text-space-cyan hover:text-white underline underline-offset-4 transition-colors"
+              >
+                Open Full Alerts Feed →
+              </button>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs min-w-[680px]">
+                <thead>
+                  <tr className="border-b border-space-border text-space-textMuted text-[10px]">
+                    <th className="pb-2.5">ASSET IDENTIFIER</th>
+                    <th className="pb-2.5">REGIME</th>
+                    <th className="pb-2.5">ALTITUDE</th>
+                    <th className="pb-2.5">CONJUNCTION TARGET</th>
+                    <th className="pb-2.5">MISS DISTANCE</th>
+                    <th className="pb-2.5">TCA (PROJECTED)</th>
+                    <th className="pb-2.5">SEVERITY</th>
+                    <th className="pb-2.5 text-right">ACTION</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-space-border/40">
+                  {satellites.map((sat) => {
+                    const isSelected = selectedSatellite.id === sat.id;
+                    const isThreat = sat.riskLevel === 'Critical';
+                    return (
+                      <tr
+                        key={sat.id}
+                        onClick={() => onSelectSatellite(sat)}
+                        className={`cursor-pointer transition-colors ${
+                          isSelected ? 'bg-space-cyan/10' : isThreat ? 'hover:bg-space-threat/5' : 'hover:bg-space-elevated/40'
+                        }`}
+                      >
+                        <td className="py-2.5 font-semibold text-space-textPrimary">{sat.name}</td>
+                        <td className="py-2.5 text-space-cyan">{sat.regime}</td>
+                        <td className="py-2.5 text-space-textSecondary">{sat.altitude.toLocaleString()} km</td>
+                        <td className="py-2.5">
+                          <span className={sat.conjunctionTarget !== 'NONE' ? 'text-space-threat font-semibold' : 'text-space-textMuted'}>
+                            {sat.conjunctionTarget}
+                          </span>
+                        </td>
+                        <td className="py-2.5 font-mono text-space-textPrimary">{sat.missDistance.toLocaleString()} m</td>
+                        <td className="py-2.5 text-space-textSecondary">{sat.tca}</td>
+                        <td className="py-2.5">
+                          <RiskBadge level={sat.riskLevel} size="xs" />
+                        </td>
+                        <td className="py-2.5 text-right">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSelectSatellite(sat);
+                            }}
+                            className="px-2.5 py-1 bg-space-elevated hover:bg-space-cyan/20 hover:text-space-cyan text-space-textSecondary rounded text-[10px] border border-space-border transition-colors"
+                          >
+                            Inspect
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // PAGE 2: ORBITAL CATALOG VIEW
+    // ==========================================
+    function CatalogView({
+      satellites,
+      totalTracked,
+      selectedSatellite,
+      onSelectSatellite,
+      catalogSearch,
+      setCatalogSearch,
+      regimeFilter,
+      setRegimeFilter,
+      riskFilter,
+      setRiskFilter,
+      onRequestBurn,
+      onSwitchToOverview
+    }) {
+      return (
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-1">
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold tracking-tight text-space-textPrimary">Orbital Catalog & Fleet Registry</h1>
+              <p className="text-xs text-space-textSecondary mt-0.5">
+                {totalTracked} tracked orbital objects currently cataloged in the active simulation database.
+              </p>
+            </div>
+          </div>
+
+          {/* Search and Filters Bar */}
+          <div className="bg-space-card border border-space-border rounded-xl p-4 flex flex-wrap items-center justify-between gap-4 font-mono">
+            {/* Search Input */}
+            <div className="relative flex-1 min-w-[240px]">
+              <div className="absolute left-3 top-2.5 text-space-textMuted">
+                <IconSearch />
+              </div>
+              <input
+                type="text"
+                placeholder="Search satellite name, ID, or operator..."
+                value={catalogSearch}
+                onChange={(e) => setCatalogSearch(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 bg-space-elevated border border-space-border rounded-lg text-xs text-space-textPrimary placeholder-space-textMuted focus:outline-none focus:border-space-cyan"
+              />
+            </div>
+
+            {/* Regime Filter */}
+            <div className="flex items-center gap-1.5 text-xs">
+              <span className="text-space-textMuted text-[10px] tracking-wider uppercase">REGIME:</span>
+              {['ALL', 'LEO', 'MEO', 'GEO'].map((regime) => (
+                <button
+                  key={regime}
+                  onClick={() => setRegimeFilter(regime)}
+                  className={`px-2.5 py-1 rounded text-xs transition-all ${
+                    regimeFilter === regime
+                      ? 'bg-space-cyan text-space-base font-semibold shadow-[0_0_8px_rgba(56,217,245,0.4)]'
+                      : 'bg-space-elevated border border-space-border text-space-textSecondary hover:text-space-textPrimary'
+                  }`}
+                >
+                  {regime}
+                </button>
+              ))}
+            </div>
+
+            {/* Risk Filter */}
+            <div className="flex items-center gap-1.5 text-xs">
+              <span className="text-space-textMuted text-[10px] tracking-wider uppercase">RISK:</span>
+              {['ALL', 'Critical', 'Elevated', 'Nominal'].map((risk) => (
+                <button
+                  key={risk}
+                  onClick={() => setRiskFilter(risk)}
+                  className={`px-2.5 py-1 rounded text-xs transition-all ${
+                    riskFilter === risk
+                      ? 'bg-space-cyan text-space-base font-semibold shadow-[0_0_8px_rgba(56,217,245,0.4)]'
+                      : 'bg-space-elevated border border-space-border text-space-textSecondary hover:text-space-textPrimary'
+                  }`}
+                >
+                  {risk}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Catalog Layout: Grid (8 Cols) + Inspector Drawer (4 Cols) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start font-mono">
+            {/* Catalog Grid */}
+            <div className="lg:col-span-8 space-y-3">
+              {satellites.length === 0 ? (
+                <div className="p-12 text-center bg-space-card border border-dashed border-space-border rounded-xl space-y-3">
+                  <div className="text-space-warning font-semibold text-sm">NO MATCHING SATELLITES FOUND</div>
+                  <div className="text-space-textMuted text-xs">
+                    No orbital objects match "{catalogSearch}" with the active regime and risk criteria.
+                  </div>
+                  <button
+                    onClick={() => {
+                      setCatalogSearch('');
+                      setRegimeFilter('ALL');
+                      setRiskFilter('ALL');
+                    }}
+                    className="mt-2 px-3.5 py-1.5 bg-space-elevated hover:bg-space-cyan/20 hover:text-space-cyan text-space-textSecondary text-xs rounded-lg border border-space-border transition-colors"
+                  >
+                    Reset Search Filters
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {satellites.map((sat) => {
+                    const isSelected = selectedSatellite.id === sat.id;
+                    return (
+                      <div
+                        key={sat.id}
+                        onClick={() => onSelectSatellite(sat)}
+                        className={`p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
+                          isSelected
+                            ? 'bg-space-cyan/10 border-space-cyan shadow-[0_0_15px_rgba(56,217,245,0.12)]'
+                            : 'bg-space-card border-space-border hover:border-space-borderHover'
+                        }`}
+                      >
+                        <div>
+                          <div className="flex items-center justify-between pb-2 mb-2 border-b border-space-border/60">
+                            <span className="text-[10px] px-2 py-0.5 rounded bg-space-elevated border border-space-border text-space-cyan font-semibold">
+                              {sat.regime}
+                            </span>
+                            <RiskBadge level={sat.riskLevel} size="xs" />
+                          </div>
+
+                          <div className="font-bold text-space-textPrimary text-sm">{sat.name}</div>
+                          <div className="text-[11px] text-space-textSecondary mt-0.5">{sat.operator}</div>
+
+                          <div className="grid grid-cols-2 gap-2 mt-3 pt-2 border-t border-space-border/50 text-xs">
+                            <div>
+                              <span className="text-[10px] text-space-textMuted block">ALTITUDE</span>
+                              <span className="text-space-cyan font-semibold">{sat.altitude.toLocaleString()} km</span>
+                            </div>
+                            <div>
+                              <span className="text-[10px] text-space-textMuted block">VELOCITY</span>
+                              <span className="text-space-textPrimary">{sat.velocity} km/s</span>
+                            </div>
+                            <div>
+                              <span className="text-[10px] text-space-textMuted block">NORAD</span>
+                              <span className="text-space-textSecondary">#{sat.noradId}</span>
+                            </div>
+                            <div>
+                              <span className="text-[10px] text-space-textMuted block">STATUS</span>
+                              <span className="text-space-textPrimary truncate">{sat.status}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="mt-3 pt-2 border-t border-space-border/50 flex items-center justify-between text-[11px]">
+                          <span className="text-space-textMuted">THREAT:</span>
+                          <span className={sat.conjunctionTarget !== 'NONE' ? 'text-space-threat font-semibold' : 'text-space-textMuted'}>
+                            {sat.conjunctionTarget}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Inspector Detail Drawer (4 Cols) */}
+            <div className="lg:col-span-4 bg-space-card border border-space-border rounded-xl p-5 flex flex-col justify-between">
+              <div>
+                <div className="pb-3 border-b border-space-border flex items-center justify-between">
+                  <span className="text-xs font-semibold text-space-cyan tracking-wider">SELECTED TELEMETRY</span>
+                  <span className="text-[10px] text-space-textMuted">ID: {selectedSatellite.id}</span>
+                </div>
+
+                <div className="mt-4 space-y-3 text-xs">
+                  <div>
+                    <div className="text-[10px] text-space-textMuted">ASSET TITLE</div>
+                    <div className="text-base font-bold text-space-textPrimary">{selectedSatellite.name}</div>
+                    <div className="text-space-cyan text-[11px]">{selectedSatellite.operator}</div>
+                  </div>
+
+                  <div className="space-y-2 pt-3 border-t border-space-border/60">
+                    <div className="flex justify-between">
+                      <span className="text-space-textSecondary">Orbital Regime:</span>
+                      <span className="text-space-textPrimary font-semibold">{selectedSatellite.regime}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-space-textSecondary">Mean Altitude:</span>
+                      <span className="text-space-cyan font-semibold">{selectedSatellite.altitude.toLocaleString()} km</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-space-textSecondary">Orbital Velocity:</span>
+                      <span className="text-space-textPrimary">{selectedSatellite.velocity} km/s</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-space-textSecondary">Inclination:</span>
+                      <span className="text-space-textPrimary">{selectedSatellite.inclination}°</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-space-textSecondary">Operational State:</span>
+                      <span className="text-space-safe font-semibold">{selectedSatellite.status}</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-space-elevated rounded-lg border border-space-border/60 mt-4 space-y-1.5">
+                    <div className="text-[10px] text-space-textMuted font-semibold uppercase">CONJUNCTION RISK SUMMARY</div>
+                    <div className="flex justify-between">
+                      <span className="text-space-textSecondary">Target Object:</span>
+                      <span className={selectedSatellite.conjunctionTarget !== 'NONE' ? 'text-space-threat font-semibold' : 'text-space-textMuted'}>
+                        {selectedSatellite.conjunctionTarget}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-space-textSecondary">Miss Distance:</span>
+                      <span className="text-space-textPrimary">{selectedSatellite.missDistance.toLocaleString()} m</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-space-textSecondary">Probability (PoC):</span>
+                      <span className="text-space-warning font-semibold">{selectedSatellite.poc}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-space-border mt-4 space-y-2">
+                <button
+                  onClick={onSwitchToOverview}
+                  className="w-full py-2 bg-space-elevated hover:bg-space-cyan/20 hover:text-space-cyan text-space-textSecondary rounded-lg text-xs font-semibold border border-space-border transition-colors flex items-center justify-center gap-1.5"
+                >
+                  <IconCrosshair />
+                  <span>VIEW IN RADAR HUD</span>
+                </button>
+
+                {selectedSatellite.riskLevel === 'Critical' && (
+                  <button
+                    onClick={() => onRequestBurn(selectedSatellite.id)}
+                    className="w-full py-2 bg-space-threat hover:bg-space-threat/90 text-white rounded-lg text-xs font-semibold uppercase tracking-wider shadow-[0_0_12px_rgba(255,83,107,0.35)] flex items-center justify-center gap-1.5 transition-all"
+                  >
+                    <IconFlame />
+                    <span>SIMULATE EVASIVE BURN</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // PAGE 3: CONJUNCTION ALERTS VIEW
+    // ==========================================
+    function AlertsView({ alertItems, selectedSatellite, onSelectSatellite, onRequestBurn, onSwitchToOverview }) {
+      return (
+        <div className="space-y-6 font-mono">
+          {/* Header Warning Banner */}
+          <div className="bg-gradient-to-r from-space-threat/15 via-space-card to-space-card border border-space-threat/40 rounded-xl p-5">
+            <div className="flex items-start gap-3.5">
+              <div className="p-2.5 bg-space-threat/10 border border-space-threat/30 rounded-lg text-space-threat shrink-0">
+                <IconAlertTriangle />
+              </div>
+              <div className="space-y-1">
+                <h2 className="text-sm font-bold text-space-threat tracking-wider uppercase">
+                  ACTIVE CONJUNCTION & COLLISION ASSESSMENT FEED
+                </h2>
+                <p className="text-xs text-space-textSecondary leading-relaxed max-w-3xl">
+                  Displaying simulated close-approach conjunctions generated via orbital ephemeris propagation. 
+                  Events with miss distances under 500 meters or elevated collision probabilities require tactical avoidance review.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Alerts Feed */}
+          <div className="space-y-4">
+            {alertItems.length === 0 ? (
+              <div className="p-12 text-center bg-space-card border border-space-border rounded-xl space-y-3">
+                <div className="w-10 h-10 rounded-full bg-space-safe/10 border border-space-safe/30 text-space-safe flex items-center justify-center mx-auto">
+                  <IconShieldCheck />
+                </div>
+                <div className="text-space-safe font-bold text-sm">ALL CONJUNCTION VECTORS RESOLVED</div>
+                <div className="text-space-textMuted text-xs max-w-md mx-auto">
+                  No critical or elevated close-approach events detected in active simulation queue. Spacecraft orbits are clear.
+                </div>
+                <button
+                  onClick={onSwitchToOverview}
+                  className="mt-3 px-4 py-2 bg-space-cyan/15 hover:bg-space-cyan/25 text-space-cyan rounded-lg text-xs font-semibold border border-space-cyan/30 transition-all"
+                >
+                  Return to Overview HUD
+                </button>
+              </div>
+            ) : (
+              alertItems.map((sat) => {
+                const isCritical = sat.riskLevel === 'Critical';
+                return (
+                  <div
+                    key={sat.id}
+                    className={`p-5 rounded-xl border transition-all ${
+                      isCritical
+                        ? 'bg-space-threat/5 border-space-threat/40'
+                        : 'bg-space-warning/5 border-space-warning/30'
+                    }`}
+                  >
+                    <div className="flex flex-wrap items-center justify-between pb-3 border-b border-space-border/60 gap-2">
+                      <div className="flex items-center gap-2.5">
+                        <span className={`w-2 h-2 rounded-full ${isCritical ? 'bg-space-threat animate-ping' : 'bg-space-warning'}`}></span>
+                        <span className="font-bold text-space-textPrimary text-sm">
+                          CONJUNCTION: {sat.name} ↔ {sat.conjunctionTarget}
+                        </span>
+                      </div>
+                      <RiskBadge level={sat.riskLevel} />
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 my-4 text-xs">
+                      <div>
+                        <span className="text-[10px] text-space-textMuted block uppercase">MISS DISTANCE</span>
+                        <span className={`text-base font-bold ${isCritical ? 'text-space-threat' : 'text-space-warning'}`}>
+                          {sat.missDistance.toLocaleString()} m
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-space-textMuted block uppercase">TIME TO CLOSEST APPROACH</span>
+                        <span className="text-base font-bold text-space-cyan">{sat.tca}</span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-space-textMuted block uppercase">PROBABILITY (POC)</span>
+                        <span className="text-base font-bold text-space-textPrimary">{sat.poc}</span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-space-textMuted block uppercase">MEAN ALTITUDE</span>
+                        <span className="text-base font-bold text-space-textSecondary">{sat.altitude.toLocaleString()} km ({sat.regime})</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-space-border/60 flex flex-wrap items-center justify-between gap-3 text-xs">
+                      <div className="text-[11px] text-space-textSecondary">
+                        Threat: <strong className="text-space-threat">{sat.conjunctionTarget}</strong> | Operator: <strong className="text-space-textPrimary">{sat.operator}</strong>
+                      </div>
+
+                      <div className="flex items-center gap-2.5">
+                        <button
+                          onClick={() => {
+                            onSelectSatellite(sat);
+                            onSwitchToOverview();
+                          }}
+                          className="px-3.5 py-1.5 bg-space-elevated hover:bg-space-cyan/20 hover:text-space-cyan text-space-textSecondary rounded-lg text-xs border border-space-border transition-colors flex items-center gap-1.5"
+                        >
+                          <IconCrosshair />
+                          <span>Lock in Radar HUD</span>
+                        </button>
+
+                        {isCritical && (
+                          <button
+                            onClick={() => onRequestBurn(sat.id)}
+                            className="px-4 py-1.5 bg-space-threat hover:bg-space-threat/90 text-white rounded-lg text-xs font-semibold uppercase shadow-[0_0_12px_rgba(255,83,107,0.35)] flex items-center gap-1.5 transition-all"
+                          >
+                            <IconFlame />
+                            <span>Simulate Evasive Burn</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // ORBITAL RADAR CANVAS (CRISP 2D POLAR SIM)
+    // ==========================================
+    function RadarCanvas({ satellites, selectedSatellite, onSelectSatellite }) {
+      const canvasRef = useRef(null);
+      const anglesRef = useRef({});
+
+      // Initialize angles
+      useEffect(() => {
+        satellites.forEach(s => {
+          if (anglesRef.current[s.id] === undefined) {
+            anglesRef.current[s.id] = s.angle || Math.random() * Math.PI * 2;
+          }
+        });
+      }, [satellites]);
+
+      useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let animId;
+
+        // Subtle random starfield cached coordinates
+        const stars = Array.from({ length: 45 }).map(() => ({
+          x: Math.random(),
+          y: Math.random(),
+          alpha: 0.15 + Math.random() * 0.45
+        }));
+
+        const render = () => {
+          const dpr = window.devicePixelRatio || 1;
+          const rect = canvas.parentElement.getBoundingClientRect();
+          const displayWidth = rect.width;
+          const displayHeight = rect.height || 400;
+
+          if (canvas.width !== displayWidth * dpr || canvas.height !== displayHeight * dpr) {
+            canvas.width = displayWidth * dpr;
+            canvas.height = displayHeight * dpr;
+          }
+
+          ctx.save();
+          ctx.scale(dpr, dpr);
+
+          const width = displayWidth;
+          const height = displayHeight;
+          const cx = width / 2;
+          const cy = height / 2;
+          const maxR = Math.min(width, height) * 0.44;
+
+          // Deep Space Dark Background
+          ctx.fillStyle = '#030712';
+          ctx.fillRect(0, 0, width, height);
+
+          // Subtle Stars
+          stars.forEach(star => {
+            ctx.fillStyle = `rgba(237, 244, 255, ${star.alpha})`;
+            ctx.fillRect(star.x * width, star.y * height, 1, 1);
+          });
+
+          // Polar Crosshair Axes
+          ctx.strokeStyle = 'rgba(91, 160, 190, 0.12)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(cx, 10);
+          ctx.lineTo(cx, height - 10);
+          ctx.moveTo(10, cy);
+          ctx.lineTo(width - 10, cy);
+          ctx.stroke();
+
+          // Concentric Orbit Rings (LEO, MEO, GEO)
+          const shells = [
+            { label: 'LEO (~500 km)', r: maxR * 0.38 },
+            { label: 'MEO (~20,000 km)', r: maxR * 0.65 },
+            { label: 'GEO (35,786 km)', r: maxR * 0.88 }
+          ];
+
+          shells.forEach((shell) => {
+            ctx.beginPath();
+            ctx.arc(cx, cy, shell.r, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(56, 217, 245, 0.16)';
+            ctx.setLineDash([4, 6]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = 'rgba(91, 160, 190, 0.4)';
+            ctx.font = '9px monospace';
+            ctx.fillText(shell.label, cx + 8, cy - shell.r + 11);
+          });
+
+          // Earth Central Body with Atmosphere Glow
+          const earthR = maxR * 0.16;
+
+          // Soft Atmospheric outer glow
+          const atmosGrad = ctx.createRadialGradient(cx, cy, earthR * 0.9, cx, cy, earthR * 1.35);
+          atmosGrad.addColorStop(0, 'rgba(56, 217, 245, 0.25)');
+          atmosGrad.addColorStop(1, 'rgba(56, 217, 245, 0)');
+          ctx.fillStyle = atmosGrad;
+          ctx.beginPath();
+          ctx.arc(cx, cy, earthR * 1.35, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Earth sphere core
+          const earthGrad = ctx.createRadialGradient(cx - earthR * 0.3, cy - earthR * 0.3, earthR * 0.1, cx, cy, earthR);
+          earthGrad.addColorStop(0, '#1E4E8C');
+          earthGrad.addColorStop(0.7, '#0B2545');
+          earthGrad.addColorStop(1, '#051329');
+
+          ctx.beginPath();
+          ctx.arc(cx, cy, earthR, 0, Math.PI * 2);
+          ctx.fillStyle = earthGrad;
+          ctx.fill();
+
+          ctx.strokeStyle = 'rgba(56, 217, 245, 0.4)';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          ctx.fillStyle = '#EDF4FF';
+          ctx.font = '600 8.5px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText('EARTH [0,0]', cx, cy + 3);
+
+          // Animate and render satellites
+          satellites.forEach((sat) => {
+            anglesRef.current[sat.id] = (anglesRef.current[sat.id] || 0) + sat.speed * 0.4;
+            const angle = anglesRef.current[sat.id];
+            const r = maxR * sat.radiusRatio;
+
+            const x = cx + Math.cos(angle) * r;
+            const y = cy + Math.sin(angle) * r;
+
+            sat.renderedX = x;
+            sat.renderedY = y;
+
+            const isSelected = selectedSatellite?.id === sat.id;
+
+            // Halo for Selected or Threat
+            if (isSelected || sat.riskLevel === 'Critical') {
+              ctx.beginPath();
+              ctx.arc(x, y, isSelected ? 12 : 8, 0, Math.PI * 2);
+              ctx.fillStyle = sat.riskLevel === 'Critical' ? 'rgba(255, 83, 107, 0.2)' : 'rgba(56, 217, 245, 0.2)';
+              ctx.fill();
+              ctx.strokeStyle = sat.color;
+              ctx.lineWidth = 1;
+              ctx.stroke();
+            }
+
+            // Central Satellite Node
+            ctx.beginPath();
+            ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+            ctx.fillStyle = sat.color;
+            ctx.fill();
+
+            // Label
+            ctx.fillStyle = isSelected ? '#FFFFFF' : 'rgba(237, 244, 255, 0.75)';
+            ctx.font = isSelected ? '600 10px monospace' : '9px monospace';
+            ctx.textAlign = 'left';
+            ctx.fillText(sat.name, x + 8, y - 3);
+          });
+
+          // Draw Conjunction Corridor vector between Critical satellite & its target
+          const crit = satellites.find(s => s.riskLevel === 'Critical' && s.conjunctionTarget !== 'NONE');
+          if (crit && crit.renderedX && crit.renderedY) {
+            const deb = satellites.find(s => s.name === crit.conjunctionTarget || s.id === crit.conjunctionTarget);
+            if (deb && deb.renderedX && deb.renderedY) {
+              ctx.beginPath();
+              ctx.moveTo(crit.renderedX, crit.renderedY);
+              ctx.lineTo(deb.renderedX, deb.renderedY);
+              ctx.strokeStyle = '#FF536B';
+              ctx.lineWidth = 1.5;
+              ctx.setLineDash([3, 3]);
+              ctx.stroke();
+              ctx.setLineDash([]);
+
+              // Conjunction mid-point annotation
+              const midX = (crit.renderedX + deb.renderedX) / 2;
+              const midY = (crit.renderedY + deb.renderedY) / 2;
+              ctx.fillStyle = '#FF536B';
+              ctx.font = '600 8.5px monospace';
+              ctx.textAlign = 'center';
+              ctx.fillText(`VECTOR: ${crit.missDistance}m`, midX, midY - 6);
+            }
+          }
+
+          ctx.restore();
+          animId = requestAnimationFrame(render);
+        };
+
+        render();
+
+        return () => cancelAnimationFrame(animId);
+      }, [satellites, selectedSatellite]);
+
+      // Click on canvas to select node
+      const handleClick = (e) => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const clickY = e.clientY - rect.top;
+
+        for (const sat of satellites) {
+          if (sat.renderedX && sat.renderedY) {
+            const dist = Math.hypot(sat.renderedX - clickX, sat.renderedY - clickY);
+            if (dist < 18) {
+              onSelectSatellite(sat);
+              break;
+            }
+          }
+        }
+      };
+
+      return (
+        <canvas
+          ref={canvasRef}
+          onClick={handleClick}
+          className="w-full h-full cursor-crosshair"
+          title="Click any satellite node to lock telemetry"
+        />
+      );
+    }
+
+    // Mount the Application
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

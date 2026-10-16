@@ -1,0 +1,2620 @@
+{
+  "manifest": {
+    "sourceName": "CelesTrak General Perturbations (GP) Orbit Elements",
+    "exactUrl": "https://celestrak.org/NORAD/elements/gp.php?GROUP=STATIONS&FORMAT=JSON",
+    "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+    "recordCount": 21,
+    "contentType": "application/json; charset=UTF-8",
+    "httpStatus": 200,
+    "sha256": "a27b24b99d40137b787b257cd7f72f69ef476d238ed2cc685039668a48b39e91",
+    "isCached": false,
+    "cachingPolicy": "2-hour GP element update window (celestrak.org/usage-policy.php)",
+    "nextRecommendedRefreshUtc": "2026-10-16T11:22:29.132Z"
+  },
+  "records": [
+    {
+      "raw": {
+        "OBJECT_NAME": "ISS (ZARYA)",
+        "OBJECT_ID": "1998-067A",
+        "EPOCH": "2026-10-15T19:43:34.186944",
+        "MEAN_MOTION": 15.48879905,
+        "ECCENTRICITY": 0.00067551,
+        "INCLINATION": 51.6317,
+        "RA_OF_ASC_NODE": 63.1136,
+        "ARG_OF_PERICENTER": 265.8514,
+        "MEAN_ANOMALY": 94.1703,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 25544,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 59045,
+        "BSTAR": 0.00010980148,
+        "MEAN_MOTION_DOT": 0.0000558,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "ISS (ZARYA)",
+      "objectId": "1998-067A",
+      "noradCatId": 25544,
+      "epochUtc": "2026-10-15T19:43:34.186Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 13.6,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6798.1,
+      "approxAltitudeKm": 420,
+      "approxVelocityKmS": 7.66,
+      "orbitalPeriodMin": 93,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"ISS (ZARYA)\"",
+          "measuredValue": "ISS (ZARYA)"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #25544",
+          "measuredValue": 25544
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T19:43:34.186Z",
+          "measuredValue": "2026-10-15T19:43:34.186Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 13.6 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "13.6h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.4888 rev/day is within plausible physical range.",
+          "measuredValue": "15.48879905 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.000676 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00067551,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 51.6317° is valid.",
+          "measuredValue": "51.6317°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=63.11°, ArgP=265.85°, MA=94.17° within [0, 360°]",
+          "measuredValue": "RAAN:63.1136°, ArgP:265.8514°, MA:94.1703°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "POISK",
+        "OBJECT_ID": "2009-060A",
+        "EPOCH": "2026-10-15T19:43:34.186944",
+        "MEAN_MOTION": 15.48879905,
+        "ECCENTRICITY": 0.00067551,
+        "INCLINATION": 51.6317,
+        "RA_OF_ASC_NODE": 63.1136,
+        "ARG_OF_PERICENTER": 265.8514,
+        "MEAN_ANOMALY": 94.1703,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 36086,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 58643,
+        "BSTAR": 0.00010980148,
+        "MEAN_MOTION_DOT": 0.0000558,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "POISK",
+      "objectId": "2009-060A",
+      "noradCatId": 36086,
+      "epochUtc": "2026-10-15T19:43:34.186Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 13.6,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6798.1,
+      "approxAltitudeKm": 420,
+      "approxVelocityKmS": 7.66,
+      "orbitalPeriodMin": 93,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"POISK\"",
+          "measuredValue": "POISK"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #36086",
+          "measuredValue": 36086
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T19:43:34.186Z",
+          "measuredValue": "2026-10-15T19:43:34.186Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 13.6 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "13.6h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.4888 rev/day is within plausible physical range.",
+          "measuredValue": "15.48879905 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.000676 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00067551,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 51.6317° is valid.",
+          "measuredValue": "51.6317°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=63.11°, ArgP=265.85°, MA=94.17° within [0, 360°]",
+          "measuredValue": "RAAN:63.1136°, ArgP:265.8514°, MA:94.1703°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "CSS (TIANHE)",
+        "OBJECT_ID": "2021-035A",
+        "EPOCH": "2026-10-15T22:45:04.642560",
+        "MEAN_MOTION": 15.60787511,
+        "ECCENTRICITY": 0.00008552,
+        "INCLINATION": 41.4694,
+        "RA_OF_ASC_NODE": 308.5162,
+        "ARG_OF_PERICENTER": 151.7615,
+        "MEAN_ANOMALY": 208.3271,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 48274,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 31202,
+        "BSTAR": 0.00029331227,
+        "MEAN_MOTION_DOT": 0.00024884,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "CSS (TIANHE)",
+      "objectId": "2021-035A",
+      "noradCatId": 48274,
+      "epochUtc": "2026-10-15T22:45:04.642Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 10.6,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6763.5,
+      "approxAltitudeKm": 385,
+      "approxVelocityKmS": 7.68,
+      "orbitalPeriodMin": 92.3,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"CSS (TIANHE)\"",
+          "measuredValue": "CSS (TIANHE)"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #48274",
+          "measuredValue": 48274
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T22:45:04.642Z",
+          "measuredValue": "2026-10-15T22:45:04.642Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 10.6 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "10.6h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.6079 rev/day is within plausible physical range.",
+          "measuredValue": "15.60787511 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.000086 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00008552,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 41.4694° is valid.",
+          "measuredValue": "41.4694°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=308.52°, ArgP=151.76°, MA=208.33° within [0, 360°]",
+          "measuredValue": "RAAN:308.5162°, ArgP:151.7615°, MA:208.3271°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "ISS (NAUKA)",
+        "OBJECT_ID": "2021-066A",
+        "EPOCH": "2026-10-15T19:43:34.186944",
+        "MEAN_MOTION": 15.48879905,
+        "ECCENTRICITY": 0.00067551,
+        "INCLINATION": 51.6317,
+        "RA_OF_ASC_NODE": 63.1136,
+        "ARG_OF_PERICENTER": 265.8514,
+        "MEAN_ANOMALY": 94.1703,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 49044,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 58647,
+        "BSTAR": 0.00010980148,
+        "MEAN_MOTION_DOT": 0.0000558,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "ISS (NAUKA)",
+      "objectId": "2021-066A",
+      "noradCatId": 49044,
+      "epochUtc": "2026-10-15T19:43:34.186Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 13.6,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6798.1,
+      "approxAltitudeKm": 420,
+      "approxVelocityKmS": 7.66,
+      "orbitalPeriodMin": 93,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"ISS (NAUKA)\"",
+          "measuredValue": "ISS (NAUKA)"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #49044",
+          "measuredValue": 49044
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T19:43:34.186Z",
+          "measuredValue": "2026-10-15T19:43:34.186Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 13.6 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "13.6h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.4888 rev/day is within plausible physical range.",
+          "measuredValue": "15.48879905 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.000676 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00067551,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 51.6317° is valid.",
+          "measuredValue": "51.6317°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=63.11°, ArgP=265.85°, MA=94.17° within [0, 360°]",
+          "measuredValue": "RAAN:63.1136°, ArgP:265.8514°, MA:94.1703°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "FREGAT DEB",
+        "OBJECT_ID": "2011-037PF",
+        "EPOCH": "2026-10-15T12:38:59.512416",
+        "MEAN_MOTION": 12.45271289,
+        "ECCENTRICITY": 0.0941232,
+        "INCLINATION": 51.6473,
+        "RA_OF_ASC_NODE": 359.0586,
+        "ARG_OF_PERICENTER": 192.8511,
+        "MEAN_ANOMALY": 164.6741,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 49271,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 24002,
+        "BSTAR": 0.015295404,
+        "MEAN_MOTION_DOT": 0.00010998,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "FREGAT DEB",
+      "objectId": "2011-037PF",
+      "noradCatId": 49271,
+      "epochUtc": "2026-10-15T12:38:59.512Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 20.7,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 7862.5,
+      "approxAltitudeKm": 1484,
+      "approxVelocityKmS": 7.12,
+      "orbitalPeriodMin": 115.6,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"FREGAT DEB\"",
+          "measuredValue": "FREGAT DEB"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #49271",
+          "measuredValue": 49271
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T12:38:59.512Z",
+          "measuredValue": "2026-10-15T12:38:59.512Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 20.7 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "20.7h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 12.4527 rev/day is within plausible physical range.",
+          "measuredValue": "12.45271289 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.094123 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.0941232,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 51.6473° is valid.",
+          "measuredValue": "51.6473°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=359.06°, ArgP=192.85°, MA=164.67° within [0, 360°]",
+          "measuredValue": "RAAN:359.0586°, ArgP:192.8511°, MA:164.6741°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "CSS (WENTIAN)",
+        "OBJECT_ID": "2022-085A",
+        "EPOCH": "2026-10-15T22:45:04.642560",
+        "MEAN_MOTION": 15.60787511,
+        "ECCENTRICITY": 0.00008552,
+        "INCLINATION": 41.4694,
+        "RA_OF_ASC_NODE": 308.5162,
+        "ARG_OF_PERICENTER": 151.7615,
+        "MEAN_ANOMALY": 208.3271,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 53239,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 28823,
+        "BSTAR": 0.00029331227,
+        "MEAN_MOTION_DOT": 0.00024884,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "CSS (WENTIAN)",
+      "objectId": "2022-085A",
+      "noradCatId": 53239,
+      "epochUtc": "2026-10-15T22:45:04.642Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 10.6,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6763.5,
+      "approxAltitudeKm": 385,
+      "approxVelocityKmS": 7.68,
+      "orbitalPeriodMin": 92.3,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"CSS (WENTIAN)\"",
+          "measuredValue": "CSS (WENTIAN)"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #53239",
+          "measuredValue": 53239
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T22:45:04.642Z",
+          "measuredValue": "2026-10-15T22:45:04.642Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 10.6 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "10.6h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.6079 rev/day is within plausible physical range.",
+          "measuredValue": "15.60787511 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.000086 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00008552,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 41.4694° is valid.",
+          "measuredValue": "41.4694°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=308.52°, ArgP=151.76°, MA=208.33° within [0, 360°]",
+          "measuredValue": "RAAN:308.5162°, ArgP:151.7615°, MA:208.3271°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "CSS (MENGTIAN)",
+        "OBJECT_ID": "2022-143A",
+        "EPOCH": "2026-10-15T22:45:04.642560",
+        "MEAN_MOTION": 15.60787511,
+        "ECCENTRICITY": 0.00008552,
+        "INCLINATION": 41.4694,
+        "RA_OF_ASC_NODE": 308.5162,
+        "ARG_OF_PERICENTER": 151.7615,
+        "MEAN_ANOMALY": 208.3271,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 54216,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 30804,
+        "BSTAR": 0.00029331227,
+        "MEAN_MOTION_DOT": 0.00024884,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "CSS (MENGTIAN)",
+      "objectId": "2022-143A",
+      "noradCatId": 54216,
+      "epochUtc": "2026-10-15T22:45:04.642Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 10.6,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6763.5,
+      "approxAltitudeKm": 385,
+      "approxVelocityKmS": 7.68,
+      "orbitalPeriodMin": 92.3,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"CSS (MENGTIAN)\"",
+          "measuredValue": "CSS (MENGTIAN)"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #54216",
+          "measuredValue": 54216
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T22:45:04.642Z",
+          "measuredValue": "2026-10-15T22:45:04.642Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 10.6 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "10.6h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.6079 rev/day is within plausible physical range.",
+          "measuredValue": "15.60787511 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.000086 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00008552,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 41.4694° is valid.",
+          "measuredValue": "41.4694°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=308.52°, ArgP=151.76°, MA=208.33° within [0, 360°]",
+          "measuredValue": "RAAN:308.5162°, ArgP:151.7615°, MA:208.3271°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "SZ-21 MODULE",
+        "OBJECT_ID": "2025-246C",
+        "EPOCH": "2026-10-15T22:54:14.734080",
+        "MEAN_MOTION": 15.90121491,
+        "ECCENTRICITY": 0.0011544,
+        "INCLINATION": 41.4689,
+        "RA_OF_ASC_NODE": 268.537,
+        "ARG_OF_PERICENTER": 180.4883,
+        "MEAN_ANOMALY": 179.5956,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 66515,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 5287,
+        "BSTAR": 0.0003340214,
+        "MEAN_MOTION_DOT": 0.00103002,
+        "MEAN_MOTION_DDOT": 0.000011100376
+      },
+      "objectName": "SZ-21 MODULE",
+      "objectId": "2025-246C",
+      "noradCatId": 66515,
+      "epochUtc": "2026-10-15T22:54:14.734Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 10.5,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6680.1,
+      "approxAltitudeKm": 302,
+      "approxVelocityKmS": 7.72,
+      "orbitalPeriodMin": 90.6,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"SZ-21 MODULE\"",
+          "measuredValue": "SZ-21 MODULE"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #66515",
+          "measuredValue": 66515
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T22:54:14.734Z",
+          "measuredValue": "2026-10-15T22:54:14.734Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 10.5 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "10.5h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.9012 rev/day is within plausible physical range.",
+          "measuredValue": "15.90121491 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.001154 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.0011544,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 41.4689° is valid.",
+          "measuredValue": "41.4689°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=268.54°, ArgP=180.49°, MA=179.60° within [0, 360°]",
+          "measuredValue": "RAAN:268.537°, ArgP:180.4883°, MA:179.5956°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "DUPLEX",
+        "OBJECT_ID": "1998-067XT",
+        "EPOCH": "2026-10-14T17:43:39.770400",
+        "MEAN_MOTION": 15.72856458,
+        "ECCENTRICITY": 0.00045946,
+        "INCLINATION": 51.6229,
+        "RA_OF_ASC_NODE": 41.5372,
+        "ARG_OF_PERICENTER": 298.0088,
+        "MEAN_ANOMALY": 62.0445,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 66906,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 4940,
+        "BSTAR": 0.00052292804,
+        "MEAN_MOTION_DOT": 0.00072486,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "DUPLEX",
+      "objectId": "1998-067XT",
+      "noradCatId": 66906,
+      "epochUtc": "2026-10-14T17:43:39.770Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 39.6,
+      "freshnessCategory": "AGING",
+      "semiMajorAxisKm": 6728.9,
+      "approxAltitudeKm": 351,
+      "approxVelocityKmS": 7.7,
+      "orbitalPeriodMin": 91.6,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"DUPLEX\"",
+          "measuredValue": "DUPLEX"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #66906",
+          "measuredValue": 66906
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-14T17:43:39.770Z",
+          "measuredValue": "2026-10-14T17:43:39.770Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "WARNING",
+          "details": "Element set age is 39.6 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "39.6h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.7286 rev/day is within plausible physical range.",
+          "measuredValue": "15.72856458 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.000459 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00045946,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 51.6229° is valid.",
+          "measuredValue": "51.6229°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=41.54°, ArgP=298.01°, MA=62.04° within [0, 360°]",
+          "measuredValue": "RAAN:41.5372°, ArgP:298.0088°, MA:62.0445°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 80
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "KNACKSAT-2",
+        "OBJECT_ID": "1998-067YA",
+        "EPOCH": "2026-10-15T14:05:57.732864",
+        "MEAN_MOTION": 15.73302489,
+        "ECCENTRICITY": 0.00094728,
+        "INCLINATION": 51.6243,
+        "RA_OF_ASC_NODE": 43.4869,
+        "ARG_OF_PERICENTER": 304.9076,
+        "MEAN_ANOMALY": 55.1032,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 67683,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 3914,
+        "BSTAR": 0.00067312147,
+        "MEAN_MOTION_DOT": 0.00095743,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "KNACKSAT-2",
+      "objectId": "1998-067YA",
+      "noradCatId": 67683,
+      "epochUtc": "2026-10-15T14:05:57.732Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 19.3,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6727.6,
+      "approxAltitudeKm": 349,
+      "approxVelocityKmS": 7.7,
+      "orbitalPeriodMin": 91.5,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"KNACKSAT-2\"",
+          "measuredValue": "KNACKSAT-2"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #67683",
+          "measuredValue": 67683
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T14:05:57.732Z",
+          "measuredValue": "2026-10-15T14:05:57.732Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 19.3 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "19.3h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.7330 rev/day is within plausible physical range.",
+          "measuredValue": "15.73302489 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.000947 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00094728,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 51.6243° is valid.",
+          "measuredValue": "51.6243°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=43.49°, ArgP=304.91°, MA=55.10° within [0, 360°]",
+          "measuredValue": "RAAN:43.4869°, ArgP:304.9076°, MA:55.1032°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "GXIBA-1",
+        "OBJECT_ID": "1998-067YC",
+        "EPOCH": "2026-10-15T14:30:53.177760",
+        "MEAN_MOTION": 15.7915427,
+        "ECCENTRICITY": 0.00106877,
+        "INCLINATION": 51.6203,
+        "RA_OF_ASC_NODE": 39.7933,
+        "ARG_OF_PERICENTER": 310.2311,
+        "MEAN_ANOMALY": 49.7754,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 67685,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 3919,
+        "BSTAR": 0.00078041587,
+        "MEAN_MOTION_DOT": 0.00144887,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "GXIBA-1",
+      "objectId": "1998-067YC",
+      "noradCatId": 67685,
+      "epochUtc": "2026-10-15T14:30:53.177Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 18.9,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6711,
+      "approxAltitudeKm": 333,
+      "approxVelocityKmS": 7.71,
+      "orbitalPeriodMin": 91.2,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"GXIBA-1\"",
+          "measuredValue": "GXIBA-1"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #67685",
+          "measuredValue": 67685
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T14:30:53.177Z",
+          "measuredValue": "2026-10-15T14:30:53.177Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 18.9 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "18.9h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.7915 rev/day is within plausible physical range.",
+          "measuredValue": "15.7915427 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.001069 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00106877,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 51.6203° is valid.",
+          "measuredValue": "51.6203°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=39.79°, ArgP=310.23°, MA=49.78° within [0, 360°]",
+          "measuredValue": "RAAN:39.7933°, ArgP:310.2311°, MA:49.7754°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "UITMSAT-2",
+        "OBJECT_ID": "1998-067YD",
+        "EPOCH": "2026-10-15T13:45:05.571360",
+        "MEAN_MOTION": 16.07511608,
+        "ECCENTRICITY": 0.00119482,
+        "INCLINATION": 51.6119,
+        "RA_OF_ASC_NODE": 30.4242,
+        "ARG_OF_PERICENTER": 331.015,
+        "MEAN_ANOMALY": 29.0198,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 67686,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 3931,
+        "BSTAR": 0.0012115569,
+        "MEAN_MOTION_DOT": 0.01002771,
+        "MEAN_MOTION_DDOT": 0.00057111508
+      },
+      "objectName": "UITMSAT-2",
+      "objectId": "1998-067YD",
+      "noradCatId": 67686,
+      "epochUtc": "2026-10-15T13:45:05.571Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 19.6,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6631.8,
+      "approxAltitudeKm": 254,
+      "approxVelocityKmS": 7.75,
+      "orbitalPeriodMin": 89.6,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"UITMSAT-2\"",
+          "measuredValue": "UITMSAT-2"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #67686",
+          "measuredValue": 67686
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T13:45:05.571Z",
+          "measuredValue": "2026-10-15T13:45:05.571Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 19.6 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "19.6h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 16.0751 rev/day is within plausible physical range.",
+          "measuredValue": "16.07511608 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.001195 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00119482,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 51.6119° is valid.",
+          "measuredValue": "51.6119°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=30.42°, ArgP=331.01°, MA=29.02° within [0, 360°]",
+          "measuredValue": "RAAN:30.4242°, ArgP:331.015°, MA:29.0198°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "LEOPARD",
+        "OBJECT_ID": "1998-067YE",
+        "EPOCH": "2026-10-15T16:40:36.432768",
+        "MEAN_MOTION": 15.8834591,
+        "ECCENTRICITY": 0.00120542,
+        "INCLINATION": 51.6199,
+        "RA_OF_ASC_NODE": 38.9184,
+        "ARG_OF_PERICENTER": 321.2894,
+        "MEAN_ANOMALY": 38.7246,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 67687,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 3913,
+        "BSTAR": 0.0013179537,
+        "MEAN_MOTION_DOT": 0.00371565,
+        "MEAN_MOTION_DDOT": 0.000061262539
+      },
+      "objectName": "LEOPARD",
+      "objectId": "1998-067YE",
+      "noradCatId": 67687,
+      "epochUtc": "2026-10-15T16:40:36.432Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 16.7,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6685.1,
+      "approxAltitudeKm": 307,
+      "approxVelocityKmS": 7.72,
+      "orbitalPeriodMin": 90.7,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"LEOPARD\"",
+          "measuredValue": "LEOPARD"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #67687",
+          "measuredValue": 67687
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T16:40:36.432Z",
+          "measuredValue": "2026-10-15T16:40:36.432Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 16.7 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "16.7h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.8835 rev/day is within plausible physical range.",
+          "measuredValue": "15.8834591 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.001205 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00120542,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 51.6199° is valid.",
+          "measuredValue": "51.6199°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=38.92°, ArgP=321.29°, MA=38.72° within [0, 360°]",
+          "measuredValue": "RAAN:38.9184°, ArgP:321.2894°, MA:38.7246°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "HMU-SAT2",
+        "OBJECT_ID": "1998-067YF",
+        "EPOCH": "2026-10-15T07:07:48.285696",
+        "MEAN_MOTION": 15.88853875,
+        "ECCENTRICITY": 0.00096658,
+        "INCLINATION": 51.6218,
+        "RA_OF_ASC_NODE": 36.9658,
+        "ARG_OF_PERICENTER": 312.2736,
+        "MEAN_ANOMALY": 47.7449,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 67688,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 3912,
+        "BSTAR": 0.0010389534,
+        "MEAN_MOTION_DOT": 0.00299176,
+        "MEAN_MOTION_DDOT": 0.000043493639
+      },
+      "objectName": "HMU-SAT2",
+      "objectId": "1998-067YF",
+      "noradCatId": 67688,
+      "epochUtc": "2026-10-15T07:07:48.285Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 26.2,
+      "freshnessCategory": "AGING",
+      "semiMajorAxisKm": 6683.6,
+      "approxAltitudeKm": 305,
+      "approxVelocityKmS": 7.72,
+      "orbitalPeriodMin": 90.6,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"HMU-SAT2\"",
+          "measuredValue": "HMU-SAT2"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #67688",
+          "measuredValue": 67688
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T07:07:48.285Z",
+          "measuredValue": "2026-10-15T07:07:48.285Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "WARNING",
+          "details": "Element set age is 26.2 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "26.2h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.8885 rev/day is within plausible physical range.",
+          "measuredValue": "15.88853875 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.000967 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00096658,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 51.6218° is valid.",
+          "measuredValue": "51.6218°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=36.97°, ArgP=312.27°, MA=47.74° within [0, 360°]",
+          "measuredValue": "RAAN:36.9658°, ArgP:312.2736°, MA:47.7449°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 80
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "PROGRESS-MS 34",
+        "OBJECT_ID": "2026-093A",
+        "EPOCH": "2026-10-15T19:43:34.186944",
+        "MEAN_MOTION": 15.48879905,
+        "ECCENTRICITY": 0.00067551,
+        "INCLINATION": 51.6317,
+        "RA_OF_ASC_NODE": 63.1136,
+        "ARG_OF_PERICENTER": 265.8514,
+        "MEAN_ANOMALY": 94.1703,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 68837,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 58740,
+        "BSTAR": 0.00010980148,
+        "MEAN_MOTION_DOT": 0.0000558,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "PROGRESS-MS 34",
+      "objectId": "2026-093A",
+      "noradCatId": 68837,
+      "epochUtc": "2026-10-15T19:43:34.186Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 13.6,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6798.1,
+      "approxAltitudeKm": 420,
+      "approxVelocityKmS": 7.66,
+      "orbitalPeriodMin": 93,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"PROGRESS-MS 34\"",
+          "measuredValue": "PROGRESS-MS 34"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #68837",
+          "measuredValue": 68837
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T19:43:34.186Z",
+          "measuredValue": "2026-10-15T19:43:34.186Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 13.6 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "13.6h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.4888 rev/day is within plausible physical range.",
+          "measuredValue": "15.48879905 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.000676 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00067551,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 51.6317° is valid.",
+          "measuredValue": "51.6317°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=63.11°, ArgP=265.85°, MA=94.17° within [0, 360°]",
+          "measuredValue": "RAAN:63.1136°, ArgP:265.8514°, MA:94.1703°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "TIANZHOU-10",
+        "OBJECT_ID": "2026-102A",
+        "EPOCH": "2026-10-15T22:45:04.642560",
+        "MEAN_MOTION": 15.60787511,
+        "ECCENTRICITY": 0.00008552,
+        "INCLINATION": 41.4694,
+        "RA_OF_ASC_NODE": 308.5162,
+        "ARG_OF_PERICENTER": 151.7615,
+        "MEAN_ANOMALY": 208.3271,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 69049,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 31098,
+        "BSTAR": 0.00029331227,
+        "MEAN_MOTION_DOT": 0.00024884,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "TIANZHOU-10",
+      "objectId": "2026-102A",
+      "noradCatId": 69049,
+      "epochUtc": "2026-10-15T22:45:04.642Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 10.6,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6763.5,
+      "approxAltitudeKm": 385,
+      "approxVelocityKmS": 7.68,
+      "orbitalPeriodMin": 92.3,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"TIANZHOU-10\"",
+          "measuredValue": "TIANZHOU-10"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #69049",
+          "measuredValue": 69049
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T22:45:04.642Z",
+          "measuredValue": "2026-10-15T22:45:04.642Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 10.6 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "10.6h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.6079 rev/day is within plausible physical range.",
+          "measuredValue": "15.60787511 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.000086 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00008552,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 41.4694° is valid.",
+          "measuredValue": "41.4694°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=308.52°, ArgP=151.76°, MA=208.33° within [0, 360°]",
+          "measuredValue": "RAAN:308.5162°, ArgP:151.7615°, MA:208.3271°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "SHENZHOU-23 (SZ-23)",
+        "OBJECT_ID": "2026-113A",
+        "EPOCH": "2026-10-15T22:45:04.642560",
+        "MEAN_MOTION": 15.60787511,
+        "ECCENTRICITY": 0.00008552,
+        "INCLINATION": 41.4694,
+        "RA_OF_ASC_NODE": 308.5162,
+        "ARG_OF_PERICENTER": 151.7615,
+        "MEAN_ANOMALY": 208.3271,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 69180,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 30786,
+        "BSTAR": 0.00029331227,
+        "MEAN_MOTION_DOT": 0.00024884,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "SHENZHOU-23 (SZ-23)",
+      "objectId": "2026-113A",
+      "noradCatId": 69180,
+      "epochUtc": "2026-10-15T22:45:04.642Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 10.6,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6763.5,
+      "approxAltitudeKm": 385,
+      "approxVelocityKmS": 7.68,
+      "orbitalPeriodMin": 92.3,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"SHENZHOU-23 (SZ-23)\"",
+          "measuredValue": "SHENZHOU-23 (SZ-23)"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #69180",
+          "measuredValue": 69180
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T22:45:04.642Z",
+          "measuredValue": "2026-10-15T22:45:04.642Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 10.6 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "10.6h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.6079 rev/day is within plausible physical range.",
+          "measuredValue": "15.60787511 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.000086 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00008552,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 41.4694° is valid.",
+          "measuredValue": "41.4694°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=308.52°, ArgP=151.76°, MA=208.33° within [0, 360°]",
+          "measuredValue": "RAAN:308.5162°, ArgP:151.7615°, MA:208.3271°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "SOYUZ-MS 29",
+        "OBJECT_ID": "2026-162A",
+        "EPOCH": "2026-10-15T19:43:34.186944",
+        "MEAN_MOTION": 15.48879905,
+        "ECCENTRICITY": 0.00067551,
+        "INCLINATION": 51.6317,
+        "RA_OF_ASC_NODE": 63.1136,
+        "ARG_OF_PERICENTER": 265.8514,
+        "MEAN_ANOMALY": 94.1703,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 100057,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 59057,
+        "BSTAR": 0.00010980148,
+        "MEAN_MOTION_DOT": 0.0000558,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "SOYUZ-MS 29",
+      "objectId": "2026-162A",
+      "noradCatId": 100057,
+      "epochUtc": "2026-10-15T19:43:34.186Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 13.6,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6798.1,
+      "approxAltitudeKm": 420,
+      "approxVelocityKmS": 7.66,
+      "orbitalPeriodMin": 93,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"SOYUZ-MS 29\"",
+          "measuredValue": "SOYUZ-MS 29"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #100057",
+          "measuredValue": 100057
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T19:43:34.186Z",
+          "measuredValue": "2026-10-15T19:43:34.186Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 13.6 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "13.6h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.4888 rev/day is within plausible physical range.",
+          "measuredValue": "15.48879905 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.000676 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00067551,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 51.6317° is valid.",
+          "measuredValue": "51.6317°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=63.11°, ArgP=265.85°, MA=94.17° within [0, 360°]",
+          "measuredValue": "RAAN:63.1136°, ArgP:265.8514°, MA:94.1703°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "PROGRESS-MS 35",
+        "OBJECT_ID": "2026-212A",
+        "EPOCH": "2026-10-15T19:43:34.186944",
+        "MEAN_MOTION": 15.48879905,
+        "ECCENTRICITY": 0.00067551,
+        "INCLINATION": 51.6317,
+        "RA_OF_ASC_NODE": 63.1136,
+        "ARG_OF_PERICENTER": 265.8514,
+        "MEAN_ANOMALY": 94.1703,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 100712,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 466,
+        "BSTAR": 0.00010980148,
+        "MEAN_MOTION_DOT": 0.0000558,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "PROGRESS-MS 35",
+      "objectId": "2026-212A",
+      "noradCatId": 100712,
+      "epochUtc": "2026-10-15T19:43:34.186Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 13.6,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6798.1,
+      "approxAltitudeKm": 420,
+      "approxVelocityKmS": 7.66,
+      "orbitalPeriodMin": 93,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"PROGRESS-MS 35\"",
+          "measuredValue": "PROGRESS-MS 35"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #100712",
+          "measuredValue": 100712
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T19:43:34.186Z",
+          "measuredValue": "2026-10-15T19:43:34.186Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 13.6 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "13.6h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.4888 rev/day is within plausible physical range.",
+          "measuredValue": "15.48879905 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.000676 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00067551,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 51.6317° is valid.",
+          "measuredValue": "51.6317°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=63.11°, ArgP=265.85°, MA=94.17° within [0, 360°]",
+          "measuredValue": "RAAN:63.1136°, ArgP:265.8514°, MA:94.1703°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "CREW DRAGON 13",
+        "OBJECT_ID": "2026-226A",
+        "EPOCH": "2026-10-15T19:43:34.186944",
+        "MEAN_MOTION": 15.48879905,
+        "ECCENTRICITY": 0.00067551,
+        "INCLINATION": 51.6317,
+        "RA_OF_ASC_NODE": 63.1136,
+        "ARG_OF_PERICENTER": 265.8514,
+        "MEAN_ANOMALY": 94.1703,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 100882,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 199,
+        "BSTAR": 0.00010980148,
+        "MEAN_MOTION_DOT": 0.0000558,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "CREW DRAGON 13",
+      "objectId": "2026-226A",
+      "noradCatId": 100882,
+      "epochUtc": "2026-10-15T19:43:34.186Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 13.6,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6798.1,
+      "approxAltitudeKm": 420,
+      "approxVelocityKmS": 7.66,
+      "orbitalPeriodMin": 93,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"CREW DRAGON 13\"",
+          "measuredValue": "CREW DRAGON 13"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #100882",
+          "measuredValue": 100882
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T19:43:34.186Z",
+          "measuredValue": "2026-10-15T19:43:34.186Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 13.6 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "13.6h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.4888 rev/day is within plausible physical range.",
+          "measuredValue": "15.48879905 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.000676 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00067551,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 51.6317° is valid.",
+          "measuredValue": "51.6317°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=63.11°, ArgP=265.85°, MA=94.17° within [0, 360°]",
+          "measuredValue": "RAAN:63.1136°, ArgP:265.8514°, MA:94.1703°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    },
+    {
+      "raw": {
+        "OBJECT_NAME": "DRAGON CRS-35",
+        "OBJECT_ID": "2026-233A",
+        "EPOCH": "2026-10-15T19:43:34.186944",
+        "MEAN_MOTION": 15.48879905,
+        "ECCENTRICITY": 0.00067551,
+        "INCLINATION": 51.6317,
+        "RA_OF_ASC_NODE": 63.1136,
+        "ARG_OF_PERICENTER": 265.8514,
+        "MEAN_ANOMALY": 94.1703,
+        "EPHEMERIS_TYPE": 0,
+        "CLASSIFICATION_TYPE": "U",
+        "NORAD_CAT_ID": 101031,
+        "ELEMENT_SET_NO": 999,
+        "REV_AT_EPOCH": 11,
+        "BSTAR": 0.00010980148,
+        "MEAN_MOTION_DOT": 0.0000558,
+        "MEAN_MOTION_DDOT": 0
+      },
+      "objectName": "DRAGON CRS-35",
+      "objectId": "2026-233A",
+      "noradCatId": 101031,
+      "epochUtc": "2026-10-15T19:43:34.186Z",
+      "retrievedAtUtc": "2026-10-16T09:22:29.112Z",
+      "recordAgeHours": 13.6,
+      "freshnessCategory": "FRESH",
+      "semiMajorAxisKm": 6798.1,
+      "approxAltitudeKm": 420,
+      "approxVelocityKmS": 7.66,
+      "orbitalPeriodMin": 93,
+      "covarianceAvailable": false,
+      "evidenceVerdict": "INSUFFICIENT EVIDENCE",
+      "verdictReason": "Public GP/OMM elements provide mean Keplerian parameters without a 6x6 state covariance matrix. Collision probabilities cannot be verified.",
+      "checks": [
+        {
+          "id": "CHK_ID_NAME",
+          "label": "Object Name Usability",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Object title present: \"DRAGON CRS-35\"",
+          "measuredValue": "DRAGON CRS-35"
+        },
+        {
+          "id": "CHK_ID_NORAD",
+          "label": "NORAD Catalogue Identifier",
+          "category": "IDENTIFIERS",
+          "status": "PASS",
+          "details": "Positive integer NORAD ID: #101031",
+          "measuredValue": 101031
+        },
+        {
+          "id": "CHK_EPOCH_PARSE",
+          "label": "Orbital Element Epoch Parsing",
+          "category": "EPOCH_CHRONOLOGY",
+          "status": "PASS",
+          "details": "Valid ISO 8601 UTC epoch: 2026-10-15T19:43:34.186Z",
+          "measuredValue": "2026-10-15T19:43:34.186Z"
+        },
+        {
+          "id": "CHK_EPOCH_FRESHNESS",
+          "label": "Orbital Element Age Policy (< 24h LEO)",
+          "category": "FRESHNESS",
+          "status": "PASS",
+          "details": "Element set age is 13.6 hours at retrieval time (VIGIL policy threshold: 24h).",
+          "measuredValue": "13.6h",
+          "threshold": "< 24.0h"
+        },
+        {
+          "id": "CHK_MEAN_MOTION",
+          "label": "Mean Motion Physical Bounds (0 < n < 20 rev/day)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Mean motion 15.4888 rev/day is within plausible physical range.",
+          "measuredValue": "15.48879905 rev/day",
+          "threshold": "11 - 17 rev/day (LEO)"
+        },
+        {
+          "id": "CHK_ECCENTRICITY",
+          "label": "Eccentricity Closed Orbit Bounds (0 <= e < 1)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Eccentricity 0.000676 confirmed elliptic/near-circular orbit.",
+          "measuredValue": 0.00067551,
+          "threshold": "0.0 - 0.1 (Near-circular)"
+        },
+        {
+          "id": "CHK_INCLINATION",
+          "label": "Inclination Angular Range (0° to 180°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "Inclination 51.6317° is valid.",
+          "measuredValue": "51.6317°",
+          "threshold": "0° - 180°"
+        },
+        {
+          "id": "CHK_ANGLES",
+          "label": "Keplerian Orbital Angles Range (0° to 360°)",
+          "category": "DOMAIN_BOUNDS",
+          "status": "PASS",
+          "details": "RAAN=63.11°, ArgP=265.85°, MA=94.17° within [0, 360°]",
+          "measuredValue": "RAAN:63.1136°, ArgP:265.8514°, MA:94.1703°"
+        },
+        {
+          "id": "CHK_OPTIONAL_FIELDS",
+          "label": "Optional SGP4 / BStar Metadata",
+          "category": "SCHEMA",
+          "status": "PASS",
+          "details": "All SGP4 perturbation parameters (BSTAR, derivatives) present.",
+          "measuredValue": "Complete"
+        },
+        {
+          "id": "CHK_COVARIANCE",
+          "label": "6x6 State Error Covariance Tensor",
+          "category": "COVARIANCE",
+          "status": "NOT_CHECKABLE",
+          "details": "NOT PROVIDED IN GP/OMM. CelesTrak public GP/OMM data provides mean Keplerian elements. Positional covariance requires conjunction-specific CDMs and is not evaluated from GP records alone.",
+          "measuredValue": "NOT PROVIDED IN GP/OMM",
+          "threshold": "Requires CDM Format"
+        }
+      ],
+      "missingFields": [],
+      "qualityScore": 90
+    }
+  ]
+}

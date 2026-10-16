@@ -1,0 +1,46 @@
+@import "tailwindcss";
+@import "./styles/tokens.css";
+
+@theme {
+  --color-cyber-primary: #00FFFF;
+  --color-cyber-secondary: #29AB87;
+  --color-cyber-tertiary: #FF00FF;
+  --color-cyber-neutral: #4B0082;
+  --color-cyber-surface: #FF4500;
+  --color-cyber-accent: #BF00FF;
+  --color-cyber-black: #030408;
+
+  --color-space-base: #030408;
+  --color-space-sidebar: #060814;
+  --color-space-card: #090d1f;
+  --color-space-elevated: #111530;
+  --color-space-subtle: #191c40;
+  --color-space-border: rgba(0, 255, 255, 0.18);
+  --color-space-border-hover: rgba(0, 255, 255, 0.45);
+  --color-space-cyan: #00FFFF;
+  --color-space-blue: #BF00FF;
+  --color-space-safe: #29AB87;
+  --color-space-warning: #FF4500;
+  --color-space-threat: #FF00FF;
+  --color-space-text-primary: #FFFFFF;
+  --color-space-text-secondary: #00FFFF;
+  --color-space-text-muted: #8b80b6;
+
+  --font-display: 'Azonix', 'Inter', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+body {
+  margin: 0;
+  background-color: #030408;
+  color: #FFFFFF;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, .font-display {
+  font-family: 'Azonix', 'Inter', sans-serif;
+  letter-spacing: 0.05em;
+}
