@@ -139,7 +139,7 @@ export function generateDeterministicPopulation(config: ScenarioConfig): Simulat
       inclinationDeg = 97.4012; // Slight 0.0012 deg inclination difference
       raanDeg = 45.0;
       argPerigeeDeg = 0.0;
-      meanAnomalyDeg = 0.0018; // Along-track separation resulting in ~216 m miss distance at TCA
+      meanAnomalyDeg = 28.5; // Nominal separation from SIM-000001 at baseline epoch
       hardBodyRadiusMeters = 1.8;
     } else if (i < 10) {
       // Standard LEO Payloads
