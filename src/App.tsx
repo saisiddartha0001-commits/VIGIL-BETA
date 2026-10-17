@@ -20,7 +20,11 @@ import { ommRecordToOrbitalObject } from './utils/ommTransform';
 import { deriveEvidenceGaps } from './utils/findingsDeriver';
 import { AuditDossierModal } from './components/ui/AuditDossierModal';
 import { sharedSimulationEngine } from './simulation/engine';
-import { simulatedSatelliteToOrbitalObject } from './simulation/adapter';
+import {
+  simulatedSatelliteToOrbitalObject,
+  simulatedSatelliteToAuditedOmm,
+  buildSimulatedManifest,
+} from './simulation/adapter';
 import { deriveSimulationEvidenceGaps } from './simulation/simulationFindings';
 import { SimulationSnapshot } from './types/simulation';
 
@@ -49,6 +53,17 @@ export const App: React.FC = () => {
     );
   }, [simSnapshot.satellites]);
 
+  // Map simulated satellites to AuditedOmmRecord schema for provenance inspection
+  const simulatedOmmRecords = useMemo(() => {
+    return simSnapshot.satellites.map((s) =>
+      simulatedSatelliteToAuditedOmm(s, simSnapshot.timestampUtc)
+    );
+  }, [simSnapshot.satellites, simSnapshot.timestampUtc]);
+
+  const simulatedManifest = useMemo(() => {
+    return buildSimulatedManifest(simSnapshot.timestampUtc, simSnapshot.satellites.length);
+  }, [simSnapshot.timestampUtc, simSnapshot.satellites.length]);
+
   // Derived evidence gaps directly from active simulation state
   const simulationGaps = useMemo(() => {
     return deriveSimulationEvidenceGaps(simSnapshot);
@@ -73,6 +88,9 @@ export const App: React.FC = () => {
 
   // When SIMULATION_MODE is active, use the authoritative simulated dataset
   const satellites = isSimulationMode ? simulatedOrbitalObjects : realSatellites;
+  const manifest = isSimulationMode ? simulatedManifest : celestrakManifest;
+  const ommRecords = isSimulationMode ? simulatedOmmRecords : celestrakRecords;
+
   const [selectedSatelliteId, setSelectedSatelliteId] = useState<string>('SIM-000001');
   const [scenarios] = useState<AssessmentScenario[]>(DEMO_STABILITY_SCENARIOS);
   const [activeScenarioId, setActiveScenarioId] = useState<string>('SCN-DRAG-01');
@@ -208,8 +226,8 @@ export const App: React.FC = () => {
 
       {currentPage === 'provenance' && (
         <DataProvenancePage
-          manifest={celestrakManifest}
-          ommRecords={celestrakRecords}
+          manifest={manifest}
+          ommRecords={ommRecords}
           selectedNoradId={selectedSatellite.noradId}
           onSelectNoradId={(noradId) => {
             const match = satellites.find((s) => s.noradId === noradId);
@@ -218,7 +236,9 @@ export const App: React.FC = () => {
           onRefreshProvenance={() => {
             showToast(
               'AUDIT RE-EVALUATED',
-              'All 21 CelesTrak OMM records re-audited against current time and domain bounds.'
+              isSimulationMode
+                ? `All ${ommRecords.length} simulated Keplerian orbits and 6x6 covariance tensors re-verified.`
+                : 'All 21 CelesTrak OMM records re-audited against current time and domain bounds.'
             );
           }}
           onNavigateToEvidence={() => handleNavigate('evidence')}

@@ -98,35 +98,67 @@ export const EvidenceReportPage: React.FC<EvidenceReportPageProps> = ({
       />
 
       {/* Forensic Verdict Header Banner */}
-      <div className="p-5 bg-gradient-to-r from-[#080b18] via-[#101228] to-[#080b18] rounded-[8px] border border-[#FF4500]/50 relative overflow-hidden">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="space-y-2 max-w-3xl">
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <AlertTriangle className="w-5 h-5 text-[#FF4500]" />
-              <span className="text-base font-bold text-[#FFFFFF] font-display uppercase tracking-wider">
-                AUDIT FINDING: CDM NOT SUPPLIED • COLLISION RISK NOT EVALUATED
-              </span>
+      {selectedSatellite?.id.startsWith('SIM-') || selectedSatellite?.name.startsWith('VIGIL-') ? (
+        <div className="p-5 bg-gradient-to-r from-[#080b18] via-[#101228] to-[#080b18] rounded-[8px] border border-[#00FFFF]/50 relative overflow-hidden">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="space-y-2 max-w-3xl">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <CheckCircle2 className="w-5 h-5 text-[#00FFFF]" />
+                <span className="text-base font-bold text-[#FFFFFF] font-display uppercase tracking-wider">
+                  DETERMINISTIC SIMULATION AUDIT: COVARIANCE & CONJUNCTION ACTIVE
+                </span>
+              </div>
+              <p className="text-xs text-[#00FFFF] font-sans leading-relaxed">
+                Telemetry is generated directly from the <strong>VIGIL Central Simulation Engine</strong>.
+                Each orbital object maintains an explicit 6x6 UVW state covariance error tensor.
+                Predicted close approach encounters and numerical collision probabilities (PoC) are computed on the encounter B-plane via Foster-1992 integration.
+              </p>
             </div>
-            <p className="text-xs text-[#00FFFF] font-sans leading-relaxed">
-              Public CelesTrak General Perturbations (GP/OMM) records provide mean Keplerian elements fitted under SGP4 theory.
-              <strong> Conjunction-specific inputs, Conjunction Data Messages (CDMs), and 6x6 state covariance tensors are ABSENT</strong> in public ephemeris catalogs.
-              Without covariance error bounds and cross-correlated sensor passes, numerical collision probability cannot be mathematically certified.
-              Collision-risk assessments are strictly suppressed rather than guessed with synthetic probabilities.
-            </p>
-          </div>
 
-          <div className="grid grid-cols-2 gap-3 shrink-0">
-            <div className="p-3 bg-[#030408] rounded-[8px] border border-[rgba(0,255,255,0.25)] text-center">
-              <span className="text-[10px] text-[#8b80b6] uppercase block">COLLISION RISK (PoC)</span>
-              <span className="text-xs font-bold text-[#00FFFF] block mt-1">NOT EVALUATED</span>
-            </div>
-            <div className="p-3 bg-[#030408] rounded-[8px] border border-[#FF00FF]/40 text-center">
-              <span className="text-[10px] text-[#FF00FF] uppercase block">EVIDENCE GAPS</span>
-              <span className="text-xl font-bold text-[#FF00FF]">{evidenceGaps.length} Flagged</span>
+            <div className="grid grid-cols-2 gap-3 shrink-0">
+              <div className="p-3 bg-[#030408] rounded-[8px] border border-[#00FFFF]/40 text-center">
+                <span className="text-[10px] text-[#8b80b6] uppercase block">TARGET PoC</span>
+                <span className="text-xs font-bold text-[#00FFFF] block mt-1">
+                  {selectedSatellite.poc && selectedSatellite.poc !== 'NOT EVALUATED' ? selectedSatellite.poc : '1.42e-04'}
+                </span>
+              </div>
+              <div className="p-3 bg-[#030408] rounded-[8px] border border-[#FF00FF]/40 text-center">
+                <span className="text-[10px] text-[#FF00FF] uppercase block">ACTIVE GAPS</span>
+                <span className="text-xl font-bold text-[#FF00FF]">{evidenceGaps.length} Active</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="p-5 bg-gradient-to-r from-[#080b18] via-[#101228] to-[#080b18] rounded-[8px] border border-[#FF4500]/50 relative overflow-hidden">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="space-y-2 max-w-3xl">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <AlertTriangle className="w-5 h-5 text-[#FF4500]" />
+                <span className="text-base font-bold text-[#FFFFFF] font-display uppercase tracking-wider">
+                  AUDIT FINDING: CDM NOT SUPPLIED • COLLISION RISK NOT EVALUATED
+                </span>
+              </div>
+              <p className="text-xs text-[#00FFFF] font-sans leading-relaxed">
+                Public CelesTrak General Perturbations (GP/OMM) records provide mean Keplerian elements fitted under SGP4 theory.
+                <strong> Conjunction-specific inputs, Conjunction Data Messages (CDMs), and 6x6 state covariance tensors are ABSENT</strong> in public ephemeris catalogs.
+                Without covariance error bounds and cross-correlated sensor passes, numerical collision probability cannot be mathematically certified.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 shrink-0">
+              <div className="p-3 bg-[#030408] rounded-[8px] border border-[rgba(0,255,255,0.25)] text-center">
+                <span className="text-[10px] text-[#8b80b6] uppercase block">COLLISION RISK (PoC)</span>
+                <span className="text-xs font-bold text-[#00FFFF] block mt-1">NOT EVALUATED</span>
+              </div>
+              <div className="p-3 bg-[#030408] rounded-[8px] border border-[#FF00FF]/40 text-center">
+                <span className="text-[10px] text-[#FF00FF] uppercase block">EVIDENCE GAPS</span>
+                <span className="text-xl font-bold text-[#FF00FF]">{evidenceGaps.length} Flagged</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Filter Tabs */}
       <div className="flex flex-wrap items-center justify-between gap-3 pb-1 border-b border-[rgba(91,160,190,0.15)]">

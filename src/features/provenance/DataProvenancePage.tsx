@@ -105,15 +105,17 @@ export const DataProvenancePage: React.FC<DataProvenancePageProps> = ({
   const passChecksCount = selectedRecord?.checks.filter((c) => c.status === 'PASS').length || 0;
   const totalChecksCount = selectedRecord?.checks.length || 0;
 
+  const isSimulation = manifest.sourceName.includes('SIMULATION') || selectedRecord?.objectId.startsWith('SIM-');
+
   return (
     <div className="space-y-6 font-mono">
       {/* 1. Header */}
       <SectionHeader
-        title="Public Orbital Data Provenance & Freshness Auditor"
-        subtitle="Forensic inspection of real CelesTrak OMM element sets, observation epochs, domain constraints, and covariance omission."
+        title={isSimulation ? "Simulated Orbital Data Provenance & Verification Auditor" : "Public Orbital Data Provenance & Freshness Auditor"}
+        subtitle={isSimulation ? "Inspection of deterministic Keplerian orbital elements, 6x6 covariance error models, and numerical validation." : "Forensic inspection of real CelesTrak OMM element sets, observation epochs, domain constraints, and covariance omission."}
         badge={
           <span className="px-2.5 py-0.5 rounded text-xs font-bold bg-[#38d9f5]/15 text-[#38d9f5] border border-[#38d9f5]/30">
-            CELESTRAK GP / OMM FEED
+            {isSimulation ? "DETERMINISTIC 2-BODY ENGINE" : "CELESTRAK GP / OMM FEED"}
           </span>
         }
         actions={
@@ -125,13 +127,13 @@ export const DataProvenancePage: React.FC<DataProvenancePageProps> = ({
               className="px-3.5 py-2 rounded-xl bg-[#101c30] hover:bg-[#14233c] text-[#38d9f5] border border-[#38d9f5]/30 text-xs font-semibold flex items-center gap-2 transition-all shadow-[0_0_12px_rgba(56,217,245,0.1)]"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isAuditing ? 'animate-spin' : ''}`} />
-              <span>{isAuditing ? 'Re-Auditing Records...' : 'Re-Audit Snapshot'}</span>
+              <span>{isAuditing ? 'Re-Auditing Records...' : isSimulation ? 'Re-Verify Simulation State' : 'Re-Audit Snapshot'}</span>
             </button>
           </div>
         }
       />
 
-      {/* 2. CelesTrak Source & Manifest Banner */}
+      {/* 2. Source & Manifest Banner */}
       <div className="p-4 md:p-5 bg-[#0b1424] rounded-2xl border border-[rgba(91,160,190,0.22)] space-y-3 relative overflow-hidden">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="space-y-1.5 min-w-0">
@@ -143,47 +145,45 @@ export const DataProvenancePage: React.FC<DataProvenancePageProps> = ({
               <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#101c30] text-[#38d9f5] border border-white/10">
                 HTTP {manifest.httpStatus} OK
               </span>
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30">
-                {manifest.isCached ? 'CACHED SNAPSHOT' : 'LOCAL CACHED SNAPSHOT (2h POLICY)'}
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#00FFFF]/10 text-[#00FFFF] border border-[#00FFFF]/30">
+                {isSimulation ? 'ACTIVE DETERMINISTIC ENGINE' : (manifest.isCached ? 'CACHED SNAPSHOT' : 'LOCAL CACHED SNAPSHOT (2h POLICY)')}
               </span>
             </div>
 
             <div className="flex items-center gap-3 text-xs text-[#91a2b9] flex-wrap">
               <span>
                 Endpoint:{' '}
-                <a
-                  href={manifest.exactUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#38d9f5] hover:underline inline-flex items-center gap-1 font-semibold"
-                >
-                  <span className="truncate max-w-xs md:max-w-md">{manifest.exactUrl}</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
+                {isSimulation ? (
+                  <span className="text-[#38d9f5] font-semibold font-mono">{manifest.exactUrl}</span>
+                ) : (
+                  <a
+                    href={manifest.exactUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#38d9f5] hover:underline inline-flex items-center gap-1 font-semibold"
+                  >
+                    <span className="truncate max-w-xs md:max-w-md">{manifest.exactUrl}</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
               </span>
               <span className="text-[#61738c]">|</span>
-              <a
-                href="https://celestrak.org/NORAD/documentation/gp-data-formats.php"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#91a2b9] hover:text-white hover:underline text-[11px] inline-flex items-center gap-1"
-              >
-                <span>Format Spec: JSON OMM</span>
-                <ExternalLink className="w-2.5 h-2.5" />
-              </a>
+              <span className="text-[#91a2b9] text-[11px] inline-flex items-center gap-1">
+                <span>Format Spec: {isSimulation ? 'VIGIL SIM-OMM (CCSDS Aligned)' : 'JSON OMM'}</span>
+              </span>
             </div>
           </div>
 
           {/* Right Manifest Metadata */}
           <div className="flex items-center gap-4 text-xs shrink-0 flex-wrap">
             <div>
-              <span className="text-[10px] text-[#61738c] uppercase block">RETRIEVED AT UTC</span>
+              <span className="text-[10px] text-[#61738c] uppercase block">SIMULATION CLOCK (UTC)</span>
               <span className="font-bold text-[#edf4ff]">
                 {manifest.retrievedAtUtc.replace('T', ' ').substring(0, 19)} UTC
               </span>
             </div>
             <div>
-              <span className="text-[10px] text-[#61738c] uppercase block">RECORDS ACQUIRED</span>
+              <span className="text-[10px] text-[#61738c] uppercase block">POPULATION</span>
               <span className="font-bold text-[#38d9f5]">{manifest.recordCount} Objects</span>
             </div>
           </div>
@@ -193,32 +193,52 @@ export const DataProvenancePage: React.FC<DataProvenancePageProps> = ({
         <div className="pt-2.5 border-t border-[rgba(91,160,190,0.12)] flex flex-wrap items-center justify-between gap-2 text-[10px] text-[#61738c]">
           <div className="flex items-center gap-1.5 min-w-0">
             <Hash className="w-3 h-3 text-[#38d9f5] shrink-0" />
-            <span className="uppercase text-[#91a2b9]">SHA-256 RAW DIGEST:</span>
+            <span className="uppercase text-[#91a2b9]">STATE DIGEST:</span>
             <span className="text-[#edf4ff] font-mono truncate select-all">{manifest.sha256}</span>
           </div>
           <div className="text-[11px] text-[#91a2b9]">
-            Usage Policy: <strong className="text-amber-300">2-hour element refresh window</strong> (celestrak.org/usage-policy.php)
+            {isSimulation ? (
+              <span>Engine Status: <strong className="text-emerald-400">Continuous Keplerian Clock (Deterministic Seed: 42)</strong></span>
+            ) : (
+              <span>Usage Policy: <strong className="text-amber-300">2-hour element refresh window</strong> (celestrak.org/usage-policy.php)</span>
+            )}
           </div>
         </div>
       </div>
 
-      {/* 3. Essential Notice on Public Orbital Data */}
-      <div className="p-3.5 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-start gap-3">
-        <Info className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+      {/* 3. Essential Notice */}
+      <div className={`p-3.5 rounded-xl flex items-start gap-3 ${
+        isSimulation ? 'bg-[#00FFFF]/10 border border-[#00FFFF]/30' : 'bg-amber-500/10 border border-amber-500/30'
+      }`}>
+        <Info className={`w-4 h-4 shrink-0 mt-0.5 ${isSimulation ? 'text-[#00FFFF]' : 'text-amber-400'}`} />
         <div className="space-y-1 text-xs font-sans leading-relaxed">
-          <div className="font-mono font-bold text-amber-300 text-[11px] uppercase tracking-wider">
-            PUBLIC ORBITAL DATA TRANSPARENCY NOTICE (NOT A LIVE SENSOR STREAM)
+          <div className={`font-mono font-bold text-[11px] uppercase tracking-wider ${
+            isSimulation ? 'text-[#00FFFF]' : 'text-amber-300'
+          }`}>
+            {isSimulation
+              ? 'DETERMINISTIC SIMULATION MODE ACTIVE (SELF-CONTAINED PHYSICAL ENVIRONMENT)'
+              : 'PUBLIC ORBITAL DATA TRANSPARENCY NOTICE (NOT A LIVE SENSOR STREAM)'}
           </div>
           <p className="text-[#91a2b9]">
-            This data originates from CelesTrak's public General Perturbations (GP) Two-Line Element / OMM catalog.
-            It represents mathematical mean elements fitted over tracking arcs under SGP4 orbital theory.
-            Crucially, <strong>`EPOCH` represents the fitted reference time of the element set</strong>, not the exact timestamp of the last physical observation.
-            Because standard public GP/OMM data does not provide 6x6 state covariance tensors or sensor residuals, <strong>VIGIL marks all records as `INSUFFICIENT EVIDENCE`</strong> for tactical collision avoidance decisions.
+            {isSimulation ? (
+              <span>
+                All orbital elements, state vectors, and 6x6 UVW covariance tensors are generated deterministically by the <strong>VIGIL 2-Body Simulation Engine</strong>.
+                Propagation follows analytical Keplerian dynamics with an iterative Newton-Raphson solver.
+                Conjunction risk assessments and encounter B-plane probabilities are <strong>mathematically evaluated directly from modeled covariance</strong>.
+              </span>
+            ) : (
+              <span>
+                This data originates from CelesTrak's public General Perturbations (GP) Two-Line Element / OMM catalog.
+                It represents mathematical mean elements fitted over tracking arcs under SGP4 orbital theory.
+                Crucially, <strong>`EPOCH` represents the fitted reference time of the element set</strong>, not the exact timestamp of the last physical observation.
+                Because standard public GP/OMM data does not provide 6x6 state covariance tensors or sensor residuals, <strong>VIGIL marks all records as `INSUFFICIENT EVIDENCE`</strong> for tactical collision avoidance decisions.
+              </span>
+            )}
           </p>
         </div>
       </div>
 
-      {/* 4. Forensic Evidence Trace Panel: Source record → Validation checks → Assumptions → Displayed result */}
+      {/* 4. Forensic Evidence Trace Panel */}
       <Panel
         title="Forensic Evidence Trace Pipeline"
         subtitle={`Audit Progression for ${selectedRecord?.objectName || 'Selected Object'} (NORAD #${selectedRecord?.noradCatId})`}
@@ -281,13 +301,23 @@ export const DataProvenancePage: React.FC<DataProvenancePageProps> = ({
           </div>
 
           {/* Central Verdict Callout */}
-          <div className="p-3.5 bg-[#050914] rounded-xl border border-amber-500/30 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+          <div className={`p-3.5 rounded-xl border flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs ${
+            isSimulation ? 'bg-[#050914] border-emerald-500/30' : 'bg-[#050914] border-amber-500/30'
+          }`}>
             <div className="flex items-center gap-2.5">
-              <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
+              {isSimulation ? (
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              ) : (
+                <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
+              )}
               <div>
-                <span className="font-bold text-amber-300 mr-2">VERDICT: INSUFFICIENT EVIDENCE</span>
+                <span className={`font-bold mr-2 ${isSimulation ? 'text-emerald-400' : 'text-amber-300'}`}>
+                  {isSimulation ? 'VERDICT: SIMULATED EVIDENCE CERTIFIED' : 'VERDICT: INSUFFICIENT EVIDENCE'}
+                </span>
                 <span className="text-[#91a2b9] font-sans">
-                  Trajectory state is mathematically plausible, but absence of 6x6 covariance suppresses collision risk claims.
+                  {isSimulation
+                    ? 'Orbital elements, 6x6 covariance tensors, and propagation states mathematically verified against physical 2-body dynamics.'
+                    : 'Trajectory state is mathematically plausible, but absence of 6x6 covariance suppresses collision risk claims.'}
                 </span>
               </div>
             </div>
@@ -304,13 +334,13 @@ export const DataProvenancePage: React.FC<DataProvenancePageProps> = ({
         </div>
       </Panel>
 
-      {/* 5. Main Content: Real CelesTrak Stations Table (8 Cols) + Quality Audit Dossier (4 Cols) */}
+      {/* 5. Main Content: Stations / Simulation Objects Table (8 Cols) + Quality Audit Dossier (4 Cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Table (8 Cols) */}
         <div className="lg:col-span-8 space-y-4">
           <Panel
-            title="Real Space Station Element Sets (CelesTrak STATIONS)"
-            subtitle="Click any station to audit domain bounds, parsed element epoch, and SGP4 terms"
+            title={isSimulation ? "Simulated Orbital Fleet Registry & Telemetry" : "Real Space Station Element Sets (CelesTrak STATIONS)"}
+            subtitle={isSimulation ? "Click any simulated satellite or debris object to inspect Keplerian parameters, covariance matrix, and audit scores" : "Click any station to audit domain bounds, parsed element epoch, and SGP4 terms"}
             icon={Database}
             actions={
               <div className="flex items-center gap-2">
@@ -393,9 +423,15 @@ export const DataProvenancePage: React.FC<DataProvenancePageProps> = ({
                         </td>
 
                         <td className="py-3">
-                          <span className="text-amber-400 text-[10px] font-semibold bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30" title="Public GP/OMM format does not provide 6x6 state covariance tensors">
-                            NOT IN GP/OMM
-                          </span>
+                          {rec.covarianceAvailable ? (
+                            <span className="text-emerald-400 text-[10px] font-semibold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                              6x6 UVW TENSOR
+                            </span>
+                          ) : (
+                            <span className="text-amber-400 text-[10px] font-semibold bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30" title="Public GP/OMM format does not provide 6x6 state covariance tensors">
+                              NOT IN GP/OMM
+                            </span>
+                          )}
                         </td>
 
                         <td className="py-3 text-right">
