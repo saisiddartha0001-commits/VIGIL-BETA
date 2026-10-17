@@ -89,150 +89,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
         </div>
       </div>
 
-      {/* 2. Restrained Metric Strip */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 font-mono">
-        <MetricCard
-          label="Demo Records"
-          value={satellites.length}
-          subtitle={`LEO: ${satellites.filter((s) => s.regime === 'LEO').length} | MEO: ${
-            satellites.filter((s) => s.regime === 'MEO').length
-          } | GEO: ${satellites.filter((s) => s.regime === 'GEO').length}`}
-          icon={Orbit}
-          variant="default"
-          onClick={() => onNavigate('catalog')}
-          badge="Inspect Catalog"
-        />
-
-        <MetricCard
-          label="Freshness Checks"
-          value={`${staleChecksCount} Flagged`}
-          subtitle={`${staleChecksCount} of ${freshnessChecks.length} checks require attention`}
-          icon={Clock}
-          variant={staleChecksCount > 0 ? 'danger' : 'success'}
-          onClick={() => onNavigate('provenance')}
-          badge="View Lineage"
-        />
-
-        <MetricCard
-          label="Evidence Gaps"
-          value={`${evidenceGaps.length} Open`}
-          subtitle={`${criticalGapsCount} Critical unverified covariance gaps`}
-          icon={AlertTriangle}
-          variant="warning"
-          onClick={() => onNavigate('evidence')}
-          badge="Audit Report"
-        />
-
-        <MetricCard
-          label="Sensitivity Flags"
-          value={`${sensitiveScenariosCount} Models`}
-          subtitle="Atmospheric drag & SRP induce divergence"
-          icon={FlaskConical}
-          variant="cyan"
-          onClick={() => onNavigate('stability')}
-          badge="Stability Lab"
-        />
-      </div>
-
-      {/* 3. Central Focal Point: 3-Tier Independent Audit Verdict */}
-      <div className="p-5 md:p-6 bg-gradient-to-r from-[#080b18] via-[#101228] to-[#080b18] border-2 border-[#00FFFF]/50 rounded-[8px] shadow-[0_0_30px_rgba(0,255,255,0.12)] relative overflow-hidden font-mono">
-        {/* Accent top line */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#00FFFF] via-[#BF00FF] to-[#00FFFF]" />
-
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-3 max-w-3xl">
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <span className="p-2 rounded-[8px] bg-[#00FFFF]/15 border border-[#00FFFF]/40 text-[#00FFFF]">
-                <ShieldAlert className="w-5 h-5" />
-              </span>
-              <div className="text-xl md:text-2xl font-black text-[#FFFFFF] font-display tracking-wider">
-                INDEPENDENT EVIDENCE AUDIT DOSSIER
-              </div>
-              <span className="px-2.5 py-0.5 rounded-[6px] text-[10px] font-bold bg-[#00FFFF]/10 text-[#00FFFF] border border-[#00FFFF]/30">
-                ACTIVE TARGET: {selectedSatellite.name} (NORAD #{selectedSatellite.noradId})
-              </span>
-            </div>
-
-            {/* 3 Independent Assessment Categories (Section 3 of requirements) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
-              {/* Category A: Data Quality */}
-              <div className="p-3 bg-[#030408] rounded-[8px] border border-[#29AB87]/40 space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-[#8b80b6] uppercase font-bold">A. DATA QUALITY</span>
-                  <span className="text-[10px] font-bold text-[#29AB87] px-1.5 py-0.2 rounded bg-[#29AB87]/15 border border-[#29AB87]/30">
-                    {selectedSatellite.dataQualityStatus || 'PASS'}
-                  </span>
-                </div>
-                <div className="text-[11px] text-[#FFFFFF] font-semibold">
-                  Grade {selectedSatellite.dataQualityGrade} • {selectedSatellite.freshnessHours.toFixed(1)}h Age
-                </div>
-                <div className="text-[10px] text-[#00FFFF]/80 font-sans leading-snug">
-                  Identifiers verified, valid Keplerian bounds, ISO epoch parsed.
-                </div>
-              </div>
-
-              {/* Category B: Orbital Propagation */}
-              <div className="p-3 bg-[#030408] rounded-[8px] border border-[#00FFFF]/40 space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-[#8b80b6] uppercase font-bold">B. PROPAGATION</span>
-                  <span className="text-[10px] font-bold text-[#00FFFF] px-1.5 py-0.2 rounded bg-[#00FFFF]/15 border border-[#00FFFF]/30">
-                    {selectedSatellite.propagationStatus || 'SGP4_CAPABLE'}
-                  </span>
-                </div>
-                <div className="text-[11px] text-[#FFFFFF] font-semibold">
-                  SGP4 Propagation Compatible
-                </div>
-                <div className="text-[10px] text-[#00FFFF]/80 font-sans leading-snug">
-                  Mean motion ({selectedSatellite.velocity.toFixed(2)} km/s) & BSTAR inputs valid.
-                </div>
-              </div>
-
-              {/* Category C: Conjunction Risk */}
-              <div className="p-3 bg-[#030408] rounded-[8px] border border-[#FF4500]/50 space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-[#8b80b6] uppercase font-bold">C. CONJUNCTION RISK</span>
-                  <span className="text-[10px] font-bold text-[#FF4500] px-1.5 py-0.2 rounded bg-[#FF4500]/15 border border-[#FF4500]/40">
-                    NO CDM
-                  </span>
-                </div>
-                <div className="text-[11px] text-[#FF4500] font-semibold">
-                  NOT EVALUATED
-                </div>
-                <div className="text-[10px] text-[#00FFFF]/80 font-sans leading-snug">
-                  CDM and 6x6 covariance absent in public GP elements. PoC suppressed.
-                </div>
-              </div>
-            </div>
-
-            <p className="text-xs text-[#00FFFF] font-sans leading-relaxed pt-1">
-              <strong>Forensic Rationale:</strong> A valid orbital record is NOT given a blanket failure verdict. The public element set is physically authentic and suitable for situational awareness, but because no Conjunction Data Message (CDM) or covariance tensor is supplied, collision probability cannot be evaluated. Tactical maneuver burns remain blocked.
-            </p>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 shrink-0">
-            <button
-              type="button"
-              onClick={() => onNavigate('evidence')}
-              className="px-4 py-2.5 bg-[#00FFFF] hover:bg-[#00FFFF]/85 text-[#030408] font-bold text-xs rounded-[8px] shadow-[0_0_20px_rgba(0,255,255,0.3)] flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:translate-y-[1px]"
-            >
-              <FileSearch className="w-4 h-4 text-[#030408]" />
-              <span className="font-display tracking-wider text-[11px]">AUDIT REPORT</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => onRequestSimBurn(selectedSatellite.id)}
-              className="px-4 py-2 bg-[#FF00FF]/15 hover:bg-[#FF00FF]/25 text-[#FF00FF] border border-[#FF00FF]/40 text-xs rounded-[8px] flex items-center justify-center gap-2 transition-all font-bold"
-            >
-              <Orbit className="w-4 h-4 text-[#FF00FF]" />
-              <span className="font-display tracking-wider text-[11px]">MANEUVER DOSSIER</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 4. Interactive 3D Orbital Intelligence Dashboard: 2-Column Responsive Layout */}
+      {/* 2. Interactive 3D Orbital Intelligence Dashboard: 2-Column Responsive Layout (Hero Position) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch font-mono">
         {/* Left Column (8 cols): Large 3D Orbital Simulation Scene */}
         <div className="lg:col-span-8 flex flex-col">
@@ -344,6 +201,149 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
               </div>
             </div>
           </Panel>
+        </div>
+      </div>
+
+      {/* 3. Restrained Metric Strip */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 font-mono">
+        <MetricCard
+          label="Demo Records"
+          value={satellites.length}
+          subtitle={`LEO: ${satellites.filter((s) => s.regime === 'LEO').length} | MEO: ${
+            satellites.filter((s) => s.regime === 'MEO').length
+          } | GEO: ${satellites.filter((s) => s.regime === 'GEO').length}`}
+          icon={Orbit}
+          variant="default"
+          onClick={() => onNavigate('catalog')}
+          badge="Inspect Catalog"
+        />
+
+        <MetricCard
+          label="Freshness Checks"
+          value={`${staleChecksCount} Flagged`}
+          subtitle={`${staleChecksCount} of ${freshnessChecks.length} checks require attention`}
+          icon={Clock}
+          variant={staleChecksCount > 0 ? 'danger' : 'success'}
+          onClick={() => onNavigate('provenance')}
+          badge="View Lineage"
+        />
+
+        <MetricCard
+          label="Evidence Gaps"
+          value={`${evidenceGaps.length} Open`}
+          subtitle={`${criticalGapsCount} Critical unverified covariance gaps`}
+          icon={AlertTriangle}
+          variant="warning"
+          onClick={() => onNavigate('evidence')}
+          badge="Audit Report"
+        />
+
+        <MetricCard
+          label="Sensitivity Flags"
+          value={`${sensitiveScenariosCount} Models`}
+          subtitle="Atmospheric drag & SRP induce divergence"
+          icon={FlaskConical}
+          variant="cyan"
+          onClick={() => onNavigate('stability')}
+          badge="Stability Lab"
+        />
+      </div>
+
+      {/* 4. Central Focal Point: 3-Tier Independent Audit Verdict */}
+      <div className="p-5 md:p-6 bg-gradient-to-r from-[#080b18] via-[#101228] to-[#080b18] border-2 border-[#00FFFF]/50 rounded-[8px] shadow-[0_0_30px_rgba(0,255,255,0.12)] relative overflow-hidden font-mono">
+        {/* Accent top line */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#00FFFF] via-[#BF00FF] to-[#00FFFF]" />
+
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-3 max-w-3xl">
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <span className="p-2 rounded-[8px] bg-[#00FFFF]/15 border border-[#00FFFF]/40 text-[#00FFFF]">
+                <ShieldAlert className="w-5 h-5" />
+              </span>
+              <div className="text-xl md:text-2xl font-black text-[#FFFFFF] font-display tracking-wider">
+                INDEPENDENT EVIDENCE AUDIT DOSSIER
+              </div>
+              <span className="px-2.5 py-0.5 rounded-[6px] text-[10px] font-bold bg-[#00FFFF]/10 text-[#00FFFF] border border-[#00FFFF]/30">
+                ACTIVE TARGET: {selectedSatellite.name} (NORAD #{selectedSatellite.noradId})
+              </span>
+            </div>
+
+            {/* 3 Independent Assessment Categories (Section 3 of requirements) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+              {/* Category A: Data Quality */}
+              <div className="p-3 bg-[#030408] rounded-[8px] border border-[#29AB87]/40 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-[#8b80b6] uppercase font-bold">A. DATA QUALITY</span>
+                  <span className="text-[10px] font-bold text-[#29AB87] px-1.5 py-0.2 rounded bg-[#29AB87]/15 border border-[#29AB87]/30">
+                    {selectedSatellite.dataQualityStatus || 'PASS'}
+                  </span>
+                </div>
+                <div className="text-[11px] text-[#FFFFFF] font-semibold">
+                  Grade {selectedSatellite.dataQualityGrade} • {selectedSatellite.freshnessHours.toFixed(1)}h Age
+                </div>
+                <div className="text-[10px] text-[#00FFFF]/80 font-sans leading-snug">
+                  Identifiers verified, valid Keplerian bounds, ISO epoch parsed.
+                </div>
+              </div>
+
+              {/* Category B: Orbital Propagation */}
+              <div className="p-3 bg-[#030408] rounded-[8px] border border-[#00FFFF]/40 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-[#8b80b6] uppercase font-bold">B. PROPAGATION</span>
+                  <span className="text-[10px] font-bold text-[#00FFFF] px-1.5 py-0.2 rounded bg-[#00FFFF]/15 border border-[#00FFFF]/30">
+                    {selectedSatellite.propagationStatus || 'SGP4_CAPABLE'}
+                  </span>
+                </div>
+                <div className="text-[11px] text-[#FFFFFF] font-semibold">
+                  SGP4 Propagation Compatible
+                </div>
+                <div className="text-[10px] text-[#00FFFF]/80 font-sans leading-snug">
+                  Mean motion ({selectedSatellite.velocity.toFixed(2)} km/s) & BSTAR inputs valid.
+                </div>
+              </div>
+
+              {/* Category C: Conjunction Risk */}
+              <div className="p-3 bg-[#030408] rounded-[8px] border border-[#FF4500]/50 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-[#8b80b6] uppercase font-bold">C. CONJUNCTION RISK</span>
+                  <span className="text-[10px] font-bold text-[#FF4500] px-1.5 py-0.2 rounded bg-[#FF4500]/15 border border-[#FF4500]/40">
+                    NO CDM
+                  </span>
+                </div>
+                <div className="text-[11px] text-[#FF4500] font-semibold">
+                  NOT EVALUATED
+                </div>
+                <div className="text-[10px] text-[#00FFFF]/80 font-sans leading-snug">
+                  CDM and 6x6 covariance absent in public GP elements. PoC suppressed.
+                </div>
+              </div>
+            </div>
+
+            <p className="text-xs text-[#00FFFF] font-sans leading-relaxed pt-1">
+              <strong>Forensic Rationale:</strong> A valid orbital record is NOT given a blanket failure verdict. The public element set is physically authentic and suitable for situational awareness, but because no Conjunction Data Message (CDM) or covariance tensor is supplied, collision probability cannot be evaluated. Tactical maneuver burns remain blocked.
+            </p>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 shrink-0">
+            <button
+              type="button"
+              onClick={() => onNavigate('evidence')}
+              className="px-4 py-2.5 bg-[#00FFFF] hover:bg-[#00FFFF]/85 text-[#030408] font-bold text-xs rounded-[8px] shadow-[0_0_20px_rgba(0,255,255,0.3)] flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:translate-y-[1px]"
+            >
+              <FileSearch className="w-4 h-4 text-[#030408]" />
+              <span className="font-display tracking-wider text-[11px]">AUDIT REPORT</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onRequestSimBurn(selectedSatellite.id)}
+              className="px-4 py-2 bg-[#FF00FF]/15 hover:bg-[#FF00FF]/25 text-[#FF00FF] border border-[#FF00FF]/40 text-xs rounded-[8px] flex items-center justify-center gap-2 transition-all font-bold"
+            >
+              <Orbit className="w-4 h-4 text-[#FF00FF]" />
+              <span className="font-display tracking-wider text-[11px]">MANEUVER DOSSIER</span>
+            </button>
+          </div>
         </div>
       </div>
 

@@ -338,21 +338,21 @@ export const Orbital3DEnvironment: React.FC<Orbital3DEnvironmentProps> = ({
   return (
     <div className="relative w-full h-[580px] bg-[#030408] rounded-xl border border-[rgba(0,255,255,0.25)] overflow-hidden shadow-[0_0_30px_rgba(0,255,255,0.1)] flex flex-col font-mono select-none">
       {/* Top Header HUD overlay */}
-      <div className="absolute top-0 left-0 right-0 z-10 px-4 py-2.5 bg-gradient-to-b from-[#090d1f]/90 to-transparent flex items-center justify-between border-b border-[rgba(0,255,255,0.15)] backdrop-blur-xs">
-        <div className="flex items-center gap-3">
+      <div className="absolute top-0 left-0 right-0 z-10 px-4 py-2.5 bg-gradient-to-b from-[#090d1f]/95 via-[#090d1f]/80 to-transparent flex flex-wrap items-center justify-between gap-2 border-b border-[rgba(0,255,255,0.15)] backdrop-blur-xs">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#00FFFF] animate-ping" />
+            <span className="w-2 h-2 rounded-full bg-[#00FFFF] animate-ping shrink-0" />
             <span className="text-xs font-bold text-[#00FFFF] uppercase tracking-wider font-display">
               3D ORBITAL SIMULATION ENVIRONMENT
             </span>
           </div>
-          <span className="text-[10px] text-[#8b80b6] px-2 py-0.5 rounded bg-[#111530] border border-[rgba(0,255,255,0.2)]">
+          <span className="text-[10px] text-[#8b80b6] px-2 py-0.5 rounded bg-[#111530] border border-[rgba(0,255,255,0.2)] shrink-0">
             DETERMINISTIC 2-BODY ENGINE
           </span>
         </div>
 
         {/* Legend */}
-        <div className="hidden sm:flex items-center gap-3 text-[10px]">
+        <div className="flex items-center gap-3 text-[10px] flex-wrap">
           <span className="flex items-center gap-1.5 text-[#29AB87]">
             <span className="w-2 h-2 rounded-full bg-[#29AB87]" /> NOMINAL
           </span>
