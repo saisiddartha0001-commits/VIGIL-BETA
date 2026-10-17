@@ -21,6 +21,7 @@ interface ObjectCatalogPageProps {
   onNavigateToEvidence?: () => void;
   onNavigateToStability?: () => void;
   onRequestSimBurn?: (satId: string) => void;
+  onOpenDossier?: (sat: OrbitalObject) => void;
 }
 
 export const ObjectCatalogPage: React.FC<ObjectCatalogPageProps> = ({
@@ -32,6 +33,7 @@ export const ObjectCatalogPage: React.FC<ObjectCatalogPageProps> = ({
   onNavigateToEvidence,
   onNavigateToStability,
   onRequestSimBurn,
+  onOpenDossier,
 }) => {
   const [regimeFilter, setRegimeFilter] = useState<string>('ALL');
   const [riskFilter, setRiskFilter] = useState<string>('ALL');
@@ -427,14 +429,25 @@ export const ObjectCatalogPage: React.FC<ObjectCatalogPageProps> = ({
                   </button>
                 )}
 
+                {onOpenDossier && (
+                  <button
+                    type="button"
+                    onClick={() => onOpenDossier(selectedSatellite)}
+                    className="w-full py-2 bg-[#00FFFF] hover:bg-[#00FFFF]/85 text-[#030408] font-bold rounded-lg uppercase tracking-wider shadow-[0_0_15px_rgba(0,255,255,0.3)] flex items-center justify-center gap-2 transition-all text-xs"
+                  >
+                    <FileSearch className="w-3.5 h-3.5" />
+                    <span>Export Audit Dossier</span>
+                  </button>
+                )}
+
                 {onRequestSimBurn && (
                   <button
                     type="button"
                     onClick={() => onRequestSimBurn(selectedSatellite.id)}
-                    className="w-full py-2 bg-[#00FFFF] hover:bg-[#00FFFF]/85 text-[#030408] font-bold rounded-lg uppercase tracking-wider shadow-[0_0_15px_rgba(0,255,255,0.3)] flex items-center justify-center gap-2 transition-all"
+                    className="w-full py-2 bg-[#FF00FF]/15 hover:bg-[#FF00FF]/25 text-[#FF00FF] border border-[#FF00FF]/40 font-bold rounded-lg uppercase tracking-wider flex items-center justify-center gap-2 transition-all text-xs"
                   >
-                    <FileSearch className="w-3.5 h-3.5" />
-                    <span>Export Audit Dossier</span>
+                    <Orbit className="w-3.5 h-3.5" />
+                    <span>Simulate ΔV Burn</span>
                   </button>
                 )}
               </div>

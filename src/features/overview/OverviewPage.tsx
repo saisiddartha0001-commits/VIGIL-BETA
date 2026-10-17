@@ -39,6 +39,7 @@ interface OverviewPageProps {
   freshnessChecks: FreshnessCheck[];
   onNavigate: (page: PageId, targetId?: string) => void;
   onRequestSimBurn: (satId: string) => void;
+  onOpenDossier?: (sat: OrbitalObject) => void;
   isSimPlaying?: boolean;
   onToggleSimPlay?: () => void;
   simSpeed?: number;
@@ -60,6 +61,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
   freshnessChecks,
   onNavigate,
   onRequestSimBurn,
+  onOpenDossier,
   isSimPlaying = false,
   onToggleSimPlay = () => {},
   simSpeed = 1,
@@ -345,13 +347,24 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
               <span className="font-display tracking-wider text-[11px]">AUDIT REPORT</span>
             </button>
 
+            {onOpenDossier && (
+              <button
+                type="button"
+                onClick={() => onOpenDossier(selectedSatellite)}
+                className="px-4 py-2 bg-[#00FFFF]/15 hover:bg-[#00FFFF]/25 text-[#00FFFF] border border-[#00FFFF]/40 text-xs rounded-[8px] flex items-center justify-center gap-2 transition-all font-bold"
+              >
+                <FileSearch className="w-4 h-4 text-[#00FFFF]" />
+                <span className="font-display tracking-wider text-[11px]">AUDIT DOSSIER</span>
+              </button>
+            )}
+
             <button
               type="button"
               onClick={() => onRequestSimBurn(selectedSatellite.id)}
               className="px-4 py-2 bg-[#FF00FF]/15 hover:bg-[#FF00FF]/25 text-[#FF00FF] border border-[#FF00FF]/40 text-xs rounded-[8px] flex items-center justify-center gap-2 transition-all font-bold"
             >
               <Orbit className="w-4 h-4 text-[#FF00FF]" />
-              <span className="font-display tracking-wider text-[11px]">MANEUVER DOSSIER</span>
+              <span className="font-display tracking-wider text-[11px]">MANEUVER BURN</span>
             </button>
           </div>
         </div>

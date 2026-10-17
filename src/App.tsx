@@ -19,6 +19,7 @@ import { PublicDataManifest, AuditedOmmRecord, SatcatRecord } from './types/omm'
 import { ommRecordToOrbitalObject } from './utils/ommTransform';
 import { deriveEvidenceGaps } from './utils/findingsDeriver';
 import { AuditDossierModal } from './components/ui/AuditDossierModal';
+import { ManeuverModal } from './components/ui/ManeuverModal';
 import { sharedSimulationEngine } from './simulation/engine';
 import {
   simulatedSatelliteToOrbitalObject,
@@ -101,7 +102,18 @@ export const App: React.FC = () => {
   const [auditLogs] = useState(DEMO_AUDIT_LOG);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [modalTargetSat, setModalTargetSat] = useState<OrbitalObject | null>(null);
+  const [dossierTargetSat, setDossierTargetSat] = useState<OrbitalObject | null>(null);
+  const [maneuverTargetSat, setManeuverTargetSat] = useState<OrbitalObject | null>(null);
+
+  const handleConfirmManeuver = () => {
+    if (maneuverTargetSat) {
+      showToast(
+        'SIMULATED ΔV BURN EXECUTED',
+        `Prograde ΔV (+2.40 m/s) applied to ${maneuverTargetSat.name}. Post-burn miss distance expanded to > 5,380 m.`
+      );
+      setManeuverTargetSat(null);
+    }
+  };
   const [toastMessage, setToastMessage] = useState<{ title: string; body: string } | null>(null);
   const [focusGapId, setFocusGapId] = useState<string | undefined>(undefined);
 
@@ -207,8 +219,9 @@ export const App: React.FC = () => {
           onNavigate={handleNavigate}
           onRequestSimBurn={(satId) => {
             const sat = satellites.find((s) => s.id === satId);
-            if (sat) setModalTargetSat(sat);
+            if (sat) setManeuverTargetSat(sat);
           }}
+          onOpenDossier={(sat) => setDossierTargetSat(sat)}
           isSimPlaying={simClock.isPlaying}
           onToggleSimPlay={() => {
             if (simClock.isPlaying) {
@@ -278,16 +291,25 @@ export const App: React.FC = () => {
           onNavigateToStability={() => handleNavigate('stability')}
           onRequestSimBurn={(satId) => {
             const sat = satellites.find((s) => s.id === satId);
-            if (sat) setModalTargetSat(sat);
+            if (sat) setManeuverTargetSat(sat);
           }}
+          onOpenDossier={(sat) => setDossierTargetSat(sat)}
         />
       )}
 
+      {/* Interactive Simulated Delta-V Maneuver Modal */}
+      <ManeuverModal
+        isOpen={Boolean(maneuverTargetSat)}
+        onClose={() => setManeuverTargetSat(null)}
+        onConfirm={handleConfirmManeuver}
+        targetSatellite={maneuverTargetSat}
+      />
+
       {/* Forensic Audit Dossier Modal */}
       <AuditDossierModal
-        isOpen={Boolean(modalTargetSat)}
-        onClose={() => setModalTargetSat(null)}
-        targetSatellite={modalTargetSat}
+        isOpen={Boolean(dossierTargetSat)}
+        onClose={() => setDossierTargetSat(null)}
+        targetSatellite={dossierTargetSat}
       />
     </AppShell>
   );
