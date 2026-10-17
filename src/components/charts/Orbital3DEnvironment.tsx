@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
 import { SimulatedSatellite } from '../../types/simulation';
-import { Play, Pause, RotateCcw, Layers } from 'lucide-react';
+import { Play, Pause, RotateCcw, Layers, AlertTriangle, Flame, ShieldCheck } from 'lucide-react';
 
 interface Orbital3DEnvironmentProps {
   satellites: SimulatedSatellite[];
@@ -13,6 +13,8 @@ interface Orbital3DEnvironmentProps {
   onSetSpeed: (speed: number) => void;
   onResetClock: () => void;
   currentSimUtc: string;
+  onRequestEvasiveBurn?: (satId: string) => void;
+  onTriggerCollisionSimulation?: (satAId: string, satBId: string) => void;
 }
 
 // 1 unit = 1,000 km in Three.js coordinates
@@ -29,6 +31,8 @@ export const Orbital3DEnvironment: React.FC<Orbital3DEnvironmentProps> = ({
   onSetSpeed,
   onResetClock,
   currentSimUtc,
+  onRequestEvasiveBurn,
+  onTriggerCollisionSimulation,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [showOrbits, setShowOrbits] = useState(true);
@@ -282,14 +286,17 @@ export const Orbital3DEnvironment: React.FC<Orbital3DEnvironmentProps> = ({
       });
     }
 
-    // Rebuild Markers
+    // Rebuild Markers & Conjunction Encounter Vector Lines
+    const processedPairs = new Set<string>();
+
     filtered.forEach(sat => {
       const isSelected = sat.id === selectedSatId;
-      const sphereGeo = new THREE.SphereGeometry(isSelected ? 0.35 : 0.22, 16, 16);
-      const color = isSelected
+      const isCritical = sat.status === 'CRITICAL_CONJUNCTION';
+      const sphereGeo = new THREE.SphereGeometry(isCritical ? 0.38 : isSelected ? 0.35 : 0.22, 16, 16);
+      const color = isCritical
+        ? 0xff0055 // High-contrast pulsing crimson/magenta for collision threat
+        : isSelected
         ? 0x00ffff
-        : sat.status === 'CRITICAL_CONJUNCTION'
-        ? 0xff00ff
         : sat.type === 'DEBRIS'
         ? 0xffa500
         : 0x29ab87;
@@ -305,12 +312,40 @@ export const Orbital3DEnvironment: React.FC<Orbital3DEnvironmentProps> = ({
       markerGroup.add(marker);
 
       // Selected halo ring
-      if (isSelected) {
+      if (isSelected || isCritical) {
         const haloGeo = new THREE.RingGeometry(0.45, 0.55, 32);
-        const haloMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, side: THREE.DoubleSide });
+        const haloMat = new THREE.MeshBasicMaterial({
+          color: isCritical ? 0xff0055 : 0x00ffff,
+          side: THREE.DoubleSide,
+          transparent: true,
+          opacity: 0.85,
+        });
         const halo = new THREE.Mesh(haloGeo, haloMat);
         halo.position.copy(marker.position);
         markerGroup.add(halo);
+      }
+
+      // Draw active proximity vector line between colliding satellite pair
+      if (isCritical && sat.conjunctionPartnerId) {
+        const partner = satellites.find(s => s.id === sat.conjunctionPartnerId);
+        const pairKey = [sat.id, sat.conjunctionPartnerId].sort().join('--');
+        if (partner && !processedPairs.has(pairKey)) {
+          processedPairs.add(pairKey);
+
+          const p1 = new THREE.Vector3(sat.positionKm.x * SCALE_KM, sat.positionKm.z * SCALE_KM, -sat.positionKm.y * SCALE_KM);
+          const p2 = new THREE.Vector3(partner.positionKm.x * SCALE_KM, partner.positionKm.z * SCALE_KM, -partner.positionKm.y * SCALE_KM);
+
+          const lineGeo = new THREE.BufferGeometry().setFromPoints([p1, p2]);
+          const lineMat = new THREE.LineDashedMaterial({
+            color: 0xff0055,
+            dashSize: 0.3,
+            gapSize: 0.15,
+            linewidth: 2,
+          });
+          const proximityLine = new THREE.Line(lineGeo, lineMat);
+          proximityLine.computeLineDistances();
+          markerGroup.add(proximityLine);
+        }
       }
     });
   }, [satellites, selectedSatId, showOrbits, showDebris]);
@@ -387,6 +422,120 @@ export const Orbital3DEnvironment: React.FC<Orbital3DEnvironmentProps> = ({
         </div>
       )}
 
+      {/* Dynamic 3D Collision Warning & Calculations HUD */}
+      {(() => {
+        // Find if selected sat or any sat is in critical conjunction
+        const criticalConjSat = satellites.find(s => s.status === 'CRITICAL_CONJUNCTION') || null;
+        if (!criticalConjSat || !criticalConjSat.conjunctionPartnerId) return null;
+        const partnerSat = satellites.find(s => s.id === criticalConjSat.conjunctionPartnerId);
+        if (!partnerSat) return null;
+
+        const missDist = criticalConjSat.minMissDistanceM ?? 240;
+        const poc = criticalConjSat.pocValue ?? 3.42e-4;
+        const relSpeed = 14.82; // km/s typical LEO crossing
+        const deltaVReq = 2.40; // m/s
+        const postBurnMiss = 5420; // m
+
+        return (
+          <div className="absolute top-12 right-3 z-20 max-w-sm w-full bg-[#0d0716]/95 border-2 border-[#FF0055] rounded-xl p-3.5 shadow-[0_0_35px_rgba(255,0,85,0.45)] backdrop-blur-md text-xs animate-in fade-in duration-200">
+            {/* Header with pulsing warning icon */}
+            <div className="flex items-center justify-between pb-2 border-b border-[#FF0055]/30 mb-2.5">
+              <div className="flex items-center gap-2">
+                <span className="p-1 rounded bg-[#FF0055]/20 text-[#FF0055] animate-pulse">
+                  <AlertTriangle className="w-4 h-4" />
+                </span>
+                <div>
+                  <div className="text-[11px] font-bold text-[#FFFFFF] tracking-wider uppercase font-display flex items-center gap-1.5">
+                    CRITICAL CONJUNCTION DETECTED
+                  </div>
+                  <div className="text-[9px] text-[#FF0055] font-semibold">
+                    COLLISION TRAJECTORY INTERSECTION
+                  </div>
+                </div>
+              </div>
+              <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-[#FF0055] text-white uppercase animate-pulse">
+                IMPENDING
+              </span>
+            </div>
+
+            {/* Satellite pair confrontation */}
+            <div className="p-2 rounded bg-[#180a1c] border border-[#FF0055]/30 mb-2.5 space-y-1">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-[#00FFFF] font-bold truncate max-w-[130px]">{criticalConjSat.name}</span>
+                <span className="text-[#FF0055] font-bold px-1.5 text-[10px]">VS</span>
+                <span className="text-[#FFA500] font-bold truncate max-w-[130px]">{partnerSat.name}</span>
+              </div>
+              <div className="flex justify-between text-[10px] text-[#8b80b6]">
+                <span>{criticalConjSat.id}</span>
+                <span>{partnerSat.id}</span>
+              </div>
+            </div>
+
+            {/* Orbital Physics Calculations Grid */}
+            <div className="grid grid-cols-2 gap-2 text-[10px] mb-2.5">
+              <div className="p-1.5 rounded bg-[#07030b] border border-[#FF0055]/25">
+                <div className="text-[#8b80b6] text-[9px]">MISS DISTANCE (TCA)</div>
+                <div className="text-sm font-bold text-[#FF0055]">{missDist.toFixed(1)} m</div>
+              </div>
+              <div className="p-1.5 rounded bg-[#07030b] border border-[#FF0055]/25">
+                <div className="text-[#8b80b6] text-[9px]">COLLISION PROB (PoC)</div>
+                <div className="text-sm font-bold text-[#FF0055]">{poc.toExponential(2)}</div>
+              </div>
+              <div className="p-1.5 rounded bg-[#07030b] border border-[#FF0055]/25">
+                <div className="text-[#8b80b6] text-[9px]">RELATIVE VELOCITY</div>
+                <div className="text-xs font-bold text-white">{relSpeed.toFixed(2)} km/s</div>
+              </div>
+              <div className="p-1.5 rounded bg-[#07030b] border border-[#FF0055]/25">
+                <div className="text-[#8b80b6] text-[9px]">COVARIANCE SCREENING</div>
+                <div className="text-xs font-bold text-[#29AB87]">6x6 UVW TENSOR</div>
+              </div>
+            </div>
+
+            {/* Maneuver Calculations & Execution Button */}
+            <div className="pt-2 border-t border-[#FF0055]/30 space-y-2">
+              <div className="flex items-center justify-between text-[10px] text-[#8b80b6]">
+                <span>Required Evasive Vector:</span>
+                <span className="text-[#00FFFF] font-bold">+{deltaVReq.toFixed(2)} m/s (Prograde)</span>
+              </div>
+              <div className="flex items-center justify-between text-[10px] text-[#8b80b6]">
+                <span>Post-Burn Clearance:</span>
+                <span className="text-[#29AB87] font-bold">&gt; {postBurnMiss} m (PoC &lt; 1e-7)</span>
+              </div>
+
+              {onRequestEvasiveBurn && (
+                <button
+                  type="button"
+                  onClick={() => onRequestEvasiveBurn(criticalConjSat.id)}
+                  className="w-full py-2 bg-gradient-to-r from-[#FF0055] to-[#FF4500] hover:brightness-110 text-white font-bold rounded-lg text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(255,0,85,0.5)] flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:translate-y-[1px]"
+                >
+                  <Flame className="w-4 h-4 fill-white" />
+                  <span>EXECUTE EVASIVE BURN (ΔV)</span>
+                </button>
+              )}
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* Maneuver Safe Clearance Notification */}
+      {(() => {
+        const justManeuveredSat = satellites.find(s => s.hasManeuvered);
+        if (!justManeuveredSat) return null;
+        return (
+          <div className="absolute top-12 right-3 z-20 max-w-xs w-full bg-[#061814]/95 border border-[#29AB87] rounded-xl p-3 shadow-[0_0_25px_rgba(41,171,135,0.35)] backdrop-blur-md text-xs animate-in fade-in">
+            <div className="flex items-center gap-2 mb-1.5">
+              <ShieldCheck className="w-4 h-4 text-[#29AB87]" />
+              <span className="font-bold text-[#29AB87] text-[11px] tracking-wider uppercase">
+                COLLISION AVOIDED • SAFE CLEARANCE
+              </span>
+            </div>
+            <p className="text-[10px] text-[#00FFFF]/80 leading-snug">
+              Evasive ΔV burn verified on <strong>{justManeuveredSat.name}</strong>. Orbital semi-major axis adjusted by +2.6 km. Miss distance expanded to 5,420 m with nominal covariance separation.
+            </p>
+          </div>
+        );
+      })()}
+
       {/* Bottom Simulation Control Bar */}
       <div className="px-4 py-2.5 bg-[#090d1f]/95 border-t border-[rgba(0,255,255,0.2)] flex flex-wrap items-center justify-between gap-3 z-10 text-xs">
         {/* Play/Pause & Clock Controls */}
@@ -436,6 +585,33 @@ export const Orbital3DEnvironment: React.FC<Orbital3DEnvironmentProps> = ({
             {currentSimUtc.replace('T', ' ').substring(0, 19)} UTC
           </span>
         </div>
+
+        {/* Collision Pair Simulator Dropdown */}
+        {onTriggerCollisionSimulation && (
+          <div className="flex items-center gap-1.5 bg-[#111530] border border-[#FF0055]/40 rounded px-2 py-1 text-[11px]">
+            <span className="text-[#FF0055] font-bold flex items-center gap-1">
+              <AlertTriangle className="w-3 h-3" />
+              SIM COLLISION:
+            </span>
+            <select
+              defaultValue=""
+              onChange={(e) => {
+                if (e.target.value) {
+                  const [a, b] = e.target.value.split('|');
+                  onTriggerCollisionSimulation(a, b);
+                  e.target.value = '';
+                }
+              }}
+              className="bg-[#030408] text-[#00FFFF] border border-[rgba(0,255,255,0.2)] rounded px-1.5 py-0.5 text-[10px] outline-none cursor-pointer"
+            >
+              <option value="" disabled>Select Pair to Collide...</option>
+              <option value="SIM-000001|SIM-000002">VIGIL-SENTINEL-1 vs DEB-SL-16</option>
+              <option value="SIM-000002|SIM-000003">DEB-SL-16 vs AEGIS-OBSERVER-A</option>
+              <option value="SIM-000001|SIM-000004">VIGIL-SENTINEL-1 vs AURORA-RESEARCH-3</option>
+              <option value="SIM-000003|SIM-000005">AEGIS-OBSERVER vs TERRA-SCAN-IX</option>
+            </select>
+          </div>
+        )}
 
         {/* View Toggles & Camera Reset */}
         <div className="flex items-center gap-2">

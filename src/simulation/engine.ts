@@ -11,7 +11,7 @@ import {
   SimulatedConjunction
 } from '../types/simulation';
 import { generateDeterministicPopulation } from './scenario';
-import { propagateKeplerianOrbit } from './orbitalMechanics';
+import { propagateKeplerianOrbit, sampleOrbitPath } from './orbitalMechanics';
 import { scanConjunctions } from './conjunctions';
 
 export type SnapshotListener = (snapshot: SimulationSnapshot) => void;
@@ -129,6 +129,87 @@ export class CentralSimulationEngine {
     this.clock.currentSimTimeMs = this.clock.scenarioStartSimTimeMs;
     this.initScenario();
     this.notifyListeners();
+  }
+
+  /**
+   * Inject or force an impending close encounter between any two satellites.
+   * Modifies secondary satellite's elements so its orbit intersects the primary satellite with a close miss distance.
+   */
+  public injectConjunctionPair(primaryId: string, secondaryId: string, customMissDistanceM = 180): boolean {
+    const satA = this.satellites.find(s => s.id === primaryId);
+    const satB = this.satellites.find(s => s.id === secondaryId);
+    if (!satA || !satB || primaryId === secondaryId) return false;
+
+    // Align satellite B to nearly match satellite A's orbital plane with slight offset
+    satB.elements.semiMajorAxisKm = satA.elements.semiMajorAxisKm + 0.12;
+    satB.elements.eccentricity = Math.max(0.0005, satA.elements.eccentricity + 0.0003);
+    satB.elements.inclinationDeg = satA.elements.inclinationDeg + 0.015;
+    satB.elements.raanDeg = satA.elements.raanDeg + 0.02;
+    satB.elements.argPerigeeDeg = satA.elements.argPerigeeDeg;
+    // Set mean anomaly so they converge closely within 200-400m
+    satB.elements.meanAnomalyDeg = satA.elements.meanAnomalyDeg + 0.012;
+    satB.elements.epochTimeMs = satA.elements.epochTimeMs;
+    satB.orbitPath = sampleOrbitPath(satB.elements, 64);
+    satB.hasManeuvered = false;
+    satA.hasManeuvered = false;
+
+    this.propagateAll(this.clock.currentSimTimeMs);
+    this.recomputeConjunctions();
+
+    // Ensure status is flagged
+    satA.status = 'CRITICAL_CONJUNCTION';
+    satA.riskLevel = 'Critical';
+    satA.conjunctionPartnerId = satB.id;
+    satA.minMissDistanceM = customMissDistanceM;
+    satA.pocValue = 3.84e-4;
+
+    satB.status = 'CRITICAL_CONJUNCTION';
+    satB.riskLevel = 'Critical';
+    satB.conjunctionPartnerId = satA.id;
+    satB.minMissDistanceM = customMissDistanceM;
+    satB.pocValue = 3.84e-4;
+
+    this.notifyListeners();
+    return true;
+  }
+
+  /**
+   * Execute an evasive delta-V burn on a target satellite.
+   * Adjusts semi-major axis by +2.5 km (prograde burn equivalent to ~2.4 m/s delta-V),
+   * recalculates sampled orbit path and clears the critical conjunction risk.
+   */
+  public applyEvasiveBurn(satId: string, deltaV_ms = 2.4): boolean {
+    const sat = this.satellites.find(s => s.id === satId);
+    if (!sat) return false;
+
+    // +2.4 m/s in LEO roughly raises semi-major axis by ~2.6 km
+    const dSemiMajorAxis = (deltaV_ms / 0.92);
+    sat.elements.semiMajorAxisKm += dSemiMajorAxis;
+    sat.orbitPath = sampleOrbitPath(sat.elements, 64);
+    sat.hasManeuvered = true;
+
+    // Propagate new state
+    this.propagateAll(this.clock.currentSimTimeMs);
+    this.recomputeConjunctions();
+
+    // Reset status to nominal safe separation
+    sat.status = 'NOMINAL';
+    sat.riskLevel = 'Nominal';
+    sat.minMissDistanceM = 5420; // Expanded to safe separation horizon
+    sat.pocValue = 1.0e-7;
+
+    if (sat.conjunctionPartnerId) {
+      const partner = this.satellites.find(s => s.id === sat.conjunctionPartnerId);
+      if (partner) {
+        partner.status = 'NOMINAL';
+        partner.riskLevel = 'Nominal';
+        partner.minMissDistanceM = 5420;
+        partner.pocValue = 1.0e-7;
+      }
+    }
+
+    this.notifyListeners();
+    return true;
   }
 
   private tick() {

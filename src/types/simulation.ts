@@ -56,6 +56,7 @@ export interface SimulatedSatellite {
   tcaUtc?: string;
   dataQualityVerdict: AuditVerdict;
   verdictReason: string;
+  hasManeuvered?: boolean;
 }
 
 export interface SimulatedConjunction {

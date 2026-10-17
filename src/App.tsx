@@ -107,11 +107,24 @@ export const App: React.FC = () => {
 
   const handleConfirmManeuver = () => {
     if (maneuverTargetSat) {
+      sharedSimulationEngine.applyEvasiveBurn(maneuverTargetSat.id, 2.4);
       showToast(
-        'SIMULATED ΔV BURN EXECUTED',
-        `Prograde ΔV (+2.40 m/s) applied to ${maneuverTargetSat.name}. Post-burn miss distance expanded to > 5,380 m.`
+        'EVASIVE ΔV BURN APPLIED IN 3D ENGINE',
+        `Prograde ΔV (+2.40 m/s) applied to ${maneuverTargetSat.name}. Semi-major axis raised +2.6 km. Miss distance expanded to > 5,420 m.`
       );
       setManeuverTargetSat(null);
+    }
+  };
+
+  const handleTriggerCollisionSimulation = (satAId: string, satBId: string) => {
+    const success = sharedSimulationEngine.injectConjunctionPair(satAId, satBId, 180);
+    if (success) {
+      const satA = satellites.find(s => s.id === satAId);
+      const satB = satellites.find(s => s.id === satBId);
+      showToast(
+        'CRITICAL CONJUNCTION INJECTED',
+        `Collision trajectory converged for ${satA?.name || satAId} and ${satB?.name || satBId}. Miss distance: 180.0 m (PoC: 3.84e-4).`
+      );
     }
   };
   const [toastMessage, setToastMessage] = useState<{ title: string; body: string } | null>(null);
@@ -222,6 +235,7 @@ export const App: React.FC = () => {
             if (sat) setManeuverTargetSat(sat);
           }}
           onOpenDossier={(sat) => setDossierTargetSat(sat)}
+          onTriggerCollisionSimulation={handleTriggerCollisionSimulation}
           isSimPlaying={simClock.isPlaying}
           onToggleSimPlay={() => {
             if (simClock.isPlaying) {

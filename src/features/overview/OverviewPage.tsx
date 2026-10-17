@@ -40,6 +40,7 @@ interface OverviewPageProps {
   onNavigate: (page: PageId, targetId?: string) => void;
   onRequestSimBurn: (satId: string) => void;
   onOpenDossier?: (sat: OrbitalObject) => void;
+  onTriggerCollisionSimulation?: (satAId: string, satBId: string) => void;
   isSimPlaying?: boolean;
   onToggleSimPlay?: () => void;
   simSpeed?: number;
@@ -62,6 +63,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
   onNavigate,
   onRequestSimBurn,
   onOpenDossier,
+  onTriggerCollisionSimulation,
   isSimPlaying = false,
   onToggleSimPlay = () => {},
   simSpeed = 1,
@@ -115,6 +117,8 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
               onSetSpeed={onSetSimSpeed}
               onResetClock={onResetSimClock}
               currentSimUtc={currentSimUtc}
+              onRequestEvasiveBurn={onRequestSimBurn}
+              onTriggerCollisionSimulation={onTriggerCollisionSimulation}
             />
           </Panel>
         </div>
