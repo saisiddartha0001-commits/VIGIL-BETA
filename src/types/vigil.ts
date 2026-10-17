@@ -36,6 +36,7 @@ export interface OrbitalObject {
   missDistance: number; // meters
   poc: string; // Probability of collision string
   pocValue: number;
+  relativeSpeedKmS?: number;
   tca: string; // Time to Closest Approach
   color: string;
   radiusRatio: number; // for polar schematic placement (0.2 to 0.9)

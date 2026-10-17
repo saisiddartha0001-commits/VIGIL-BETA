@@ -27,6 +27,7 @@ export function simulatedSatelliteToOrbitalObject(
     missDistance: sim.minMissDistanceM !== undefined ? sim.minMissDistanceM : 999999,
     poc: sim.pocValue !== undefined ? sim.pocValue.toExponential(2) : '0.00e+00',
     pocValue: sim.pocValue !== undefined ? sim.pocValue : 0,
+    relativeSpeedKmS: sim.relativeSpeedKmS,
     tca: sim.tcaUtc ? sim.tcaUtc.substring(11, 19) + ' UTC' : 'NOMINAL',
     color: sim.status === 'CRITICAL_CONJUNCTION' ? '#FF00FF' : sim.type === 'DEBRIS' ? '#FFA500' : '#00FFFF',
     radiusRatio: sim.regime === 'LEO' ? 0.35 : sim.regime === 'MEO' ? 0.65 : 0.9,

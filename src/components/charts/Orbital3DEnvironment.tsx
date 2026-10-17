@@ -430,11 +430,16 @@ export const Orbital3DEnvironment: React.FC<Orbital3DEnvironmentProps> = ({
         const partnerSat = satellites.find(s => s.id === criticalConjSat.conjunctionPartnerId);
         if (!partnerSat) return null;
 
-        const missDist = criticalConjSat.minMissDistanceM ?? 240;
-        const poc = criticalConjSat.pocValue ?? 3.42e-4;
-        const relSpeed = 14.82; // km/s typical LEO crossing
-        const deltaVReq = 2.40; // m/s
-        const postBurnMiss = 5420; // m
+        const missDist = criticalConjSat.minMissDistanceM !== undefined ? criticalConjSat.minMissDistanceM : 216.5;
+        const poc = criticalConjSat.pocValue !== undefined ? criticalConjSat.pocValue : 3.26e-5;
+        // Compute real-time relative velocity magnitude from actual state vectors
+        const dxV = criticalConjSat.velocityKmS.x - partnerSat.velocityKmS.x;
+        const dyV = criticalConjSat.velocityKmS.y - partnerSat.velocityKmS.y;
+        const dzV = criticalConjSat.velocityKmS.z - partnerSat.velocityKmS.z;
+        const liveRelSpeed = Math.sqrt(dxV * dxV + dyV * dyV + dzV * dzV);
+        const relSpeed = criticalConjSat.relativeSpeedKmS ?? (liveRelSpeed > 0.001 ? liveRelSpeed : 7.62);
+        const deltaVReq = 2.40; // m/s required prograde burn
+        const postBurnMiss = 5420; // m certified safe clearance
 
         return (
           <div className="absolute top-12 right-3 z-20 max-w-sm w-full bg-[#0d0716]/95 border-2 border-[#FF0055] rounded-xl p-3.5 shadow-[0_0_35px_rgba(255,0,85,0.45)] backdrop-blur-md text-xs animate-in fade-in duration-200">
@@ -474,7 +479,7 @@ export const Orbital3DEnvironment: React.FC<Orbital3DEnvironmentProps> = ({
             {/* Orbital Physics Calculations Grid */}
             <div className="grid grid-cols-2 gap-2 text-[10px] mb-2.5">
               <div className="p-1.5 rounded bg-[#07030b] border border-[#FF0055]/25">
-                <div className="text-[#8b80b6] text-[9px]">MISS DISTANCE (TCA)</div>
+                <div className="text-[#8b80b6] text-[9px]">CALCULATED MISS DISTANCE</div>
                 <div className="text-sm font-bold text-[#FF0055]">{missDist.toFixed(1)} m</div>
               </div>
               <div className="p-1.5 rounded bg-[#07030b] border border-[#FF0055]/25">

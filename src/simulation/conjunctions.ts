@@ -35,34 +35,43 @@ export function computeDistanceAtTimeMeters(satA: SimulatedSatellite, satB: Simu
 }
 
 /**
- * Refine TCA (Time of Closest Approach) using golden-section or ternary search
+ * Refine TCA (Time of Closest Approach) using golden-section minimization
+ * Proven numerical convergence for local minimum distance between orbits.
  */
 export function refineTca(
   satA: SimulatedSatellite,
   satB: SimulatedSatellite,
   startMs: number,
   endMs: number,
-  toleranceSec = 0.1
+  toleranceSec = 0.05
 ): { tcaMs: number; minDistanceMeters: number } {
-  let left = startMs;
-  let right = endMs;
+  let a = Math.min(startMs, endMs);
+  let b = Math.max(startMs, endMs);
   const tolMs = toleranceSec * 1000;
+  const phi = (Math.sqrt(5) - 1) / 2; // Golden ratio conjugate ~ 0.6180339887
 
-  while (right - left > tolMs) {
-    const m1 = left + (right - left) / 3;
-    const m2 = right - (right - left) / 3;
+  let c = b - phi * (b - a);
+  let d = a + phi * (b - a);
+  let fc = computeDistanceAtTimeMeters(satA, satB, c);
+  let fd = computeDistanceAtTimeMeters(satA, satB, d);
 
-    const d1 = computeDistanceAtTimeMeters(satA, satB, m1);
-    const d2 = computeDistanceAtTimeMeters(satA, satB, m2);
-
-    if (d1 < d2) {
-      right = m2;
+  while (Math.abs(b - a) > tolMs) {
+    if (fc < fd) {
+      b = d;
+      d = c;
+      fd = fc;
+      c = b - phi * (b - a);
+      fc = computeDistanceAtTimeMeters(satA, satB, c);
     } else {
-      left = m1;
+      a = c;
+      c = d;
+      fc = fd;
+      d = a + phi * (b - a);
+      fd = computeDistanceAtTimeMeters(satA, satB, d);
     }
   }
 
-  const tcaMs = (left + right) / 2;
+  const tcaMs = (a + b) / 2;
   const minDistanceMeters = computeDistanceAtTimeMeters(satA, satB, tcaMs);
 
   return { tcaMs, minDistanceMeters };
@@ -113,28 +122,26 @@ export function scanConjunctions(
         continue;
       }
 
-      // Step scan through horizon (steps of 60 seconds)
-      const stepMs = 60 * 1000;
-      let minDisInScan = Infinity;
-      let minScanTimeMs = currentSimTimeMs;
+      // Step scan through horizon (steps of 30 seconds for higher temporal resolution)
+      const stepMs = 30 * 1000;
+      let prevDist = Infinity;
+      let currDist = Infinity;
+      let nextDist = Infinity;
 
       for (let t = currentSimTimeMs; t <= currentSimTimeMs + horizonSeconds * 1000; t += stepMs) {
-        const d = computeDistanceAtTimeMeters(satA, satB, t);
-        if (d < minDisInScan) {
-          minDisInScan = d;
-          minScanTimeMs = t;
-        }
-      }
+        prevDist = currDist;
+        currDist = nextDist;
+        nextDist = computeDistanceAtTimeMeters(satA, satB, t);
 
-      // If close approach detected within screening threshold (e.g. 50 km)
-      if (minDisInScan < screenThresholdKm * 1000) {
-        // Refine TCA with high-precision numerical search
-        const { tcaMs, minDistanceMeters } = refineTca(
-          satA,
-          satB,
-          minScanTimeMs - stepMs,
-          minScanTimeMs + stepMs
-        );
+        // Detect a local minimum when prevDist > currDist and currDist < nextDist
+        if (currDist < screenThresholdKm * 1000 && currDist < prevDist && currDist <= nextDist) {
+          const tMid = t - stepMs;
+          const { tcaMs, minDistanceMeters } = refineTca(
+            satA,
+            satB,
+            tMid - stepMs,
+            tMid + stepMs
+          );
 
         // Relative velocity at TCA
         const stateA = propagateKeplerianOrbit(satA.elements, tcaMs);
@@ -191,6 +198,7 @@ export function scanConjunctions(
             crossTrackMissM: Math.round(minDistanceMeters * 0.44),
           },
         });
+        }
       }
     }
   }

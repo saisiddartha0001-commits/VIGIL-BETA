@@ -127,19 +127,19 @@ export function generateDeterministicPopulation(config: ScenarioConfig): Simulat
       inclinationDeg = 97.4; // Sun-synchronous
       raanDeg = 45.0;
       argPerigeeDeg = 0.0;
-      meanAnomalyDeg = 120.0;
+      meanAnomalyDeg = 0.0;
       hardBodyRadiusMeters = 4.2;
     } else if (i === 1) {
-      // Secondary Object engineered for a close approach with VIGIL-SENTINEL-1
+      // Secondary Object engineered for a realistic close approach with VIGIL-SENTINEL-1
       name = 'DEB-SL-16-FRAG-88';
       type = 'DEBRIS';
       regime = 'LEO';
-      semiMajorAxisKm = 6378.137 + 520.35; // Almost identical orbital energy
-      eccentricity = 0.0012;
-      inclinationDeg = 97.42;
-      raanDeg = 45.04;
-      argPerigeeDeg = 1.2;
-      meanAnomalyDeg = 120.05; // Slightly offset to create an impending close encounter ~200-400m
+      semiMajorAxisKm = 6378.137 + 520.0; // Identical energy / co-orbital intersection
+      eccentricity = 0.0008;
+      inclinationDeg = 97.4012; // Slight 0.0012 deg inclination difference
+      raanDeg = 45.0;
+      argPerigeeDeg = 0.0;
+      meanAnomalyDeg = 0.0018; // Along-track separation resulting in ~216 m miss distance at TCA
       hardBodyRadiusMeters = 1.8;
     } else if (i < 10) {
       // Standard LEO Payloads

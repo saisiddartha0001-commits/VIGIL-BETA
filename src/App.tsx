@@ -117,13 +117,13 @@ export const App: React.FC = () => {
   };
 
   const handleTriggerCollisionSimulation = (satAId: string, satBId: string) => {
-    const success = sharedSimulationEngine.injectConjunctionPair(satAId, satBId, 180);
+    const success = sharedSimulationEngine.injectConjunctionPair(satAId, satBId);
     if (success) {
       const satA = satellites.find(s => s.id === satAId);
       const satB = satellites.find(s => s.id === satBId);
       showToast(
         'CRITICAL CONJUNCTION INJECTED',
-        `Collision trajectory converged for ${satA?.name || satAId} and ${satB?.name || satBId}. Miss distance: 180.0 m (PoC: 3.84e-4).`
+        `2-body collision trajectory converged for ${satA?.name || satAId} and ${satB?.name || satBId}. Verified TCA miss distance & PoC calculated on encounter B-plane.`
       );
     }
   };

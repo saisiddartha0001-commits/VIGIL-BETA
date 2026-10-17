@@ -53,6 +53,7 @@ export interface SimulatedSatellite {
   conjunctionPartnerId?: string;
   minMissDistanceM?: number;
   pocValue?: number;
+  relativeSpeedKmS?: number;
   tcaUtc?: string;
   dataQualityVerdict: AuditVerdict;
   verdictReason: string;

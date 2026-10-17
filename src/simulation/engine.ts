@@ -69,6 +69,7 @@ export class CentralSimulationEngine {
         sat.conjunctionPartnerId = activeConj.primaryId === sat.id ? activeConj.secondaryId : activeConj.primaryId;
         sat.minMissDistanceM = activeConj.missDistanceMeters;
         sat.pocValue = activeConj.collisionProbability;
+        sat.relativeSpeedKmS = activeConj.relativeSpeedKmS;
         sat.tcaUtc = activeConj.tcaUtc;
         if (activeConj.riskSeverity === 'CRITICAL') {
           sat.status = 'CRITICAL_CONJUNCTION';
@@ -133,21 +134,22 @@ export class CentralSimulationEngine {
 
   /**
    * Inject or force an impending close encounter between any two satellites.
-   * Modifies secondary satellite's elements so its orbit intersects the primary satellite with a close miss distance.
+   * Modifies secondary satellite's elements so its orbit intersects the primary satellite with an exact physical miss distance.
    */
-  public injectConjunctionPair(primaryId: string, secondaryId: string, customMissDistanceM = 180): boolean {
+  public injectConjunctionPair(primaryId: string, secondaryId: string): boolean {
     const satA = this.satellites.find(s => s.id === primaryId);
     const satB = this.satellites.find(s => s.id === secondaryId);
     if (!satA || !satB || primaryId === secondaryId) return false;
 
-    // Align satellite B to nearly match satellite A's orbital plane with slight offset
-    satB.elements.semiMajorAxisKm = satA.elements.semiMajorAxisKm + 0.12;
-    satB.elements.eccentricity = Math.max(0.0005, satA.elements.eccentricity + 0.0003);
-    satB.elements.inclinationDeg = satA.elements.inclinationDeg + 0.015;
-    satB.elements.raanDeg = satA.elements.raanDeg + 0.02;
+    // Mathematically align satellite B's Keplerian orbit to intersect satellite A's path:
+    // Identical energy (semi-major axis), minimal inclination difference, and precise along-track offset.
+    satB.elements.semiMajorAxisKm = satA.elements.semiMajorAxisKm;
+    satB.elements.eccentricity = satA.elements.eccentricity;
+    satB.elements.inclinationDeg = satA.elements.inclinationDeg + 0.0012;
+    satB.elements.raanDeg = satA.elements.raanDeg;
     satB.elements.argPerigeeDeg = satA.elements.argPerigeeDeg;
-    // Set mean anomaly so they converge closely within 200-400m
-    satB.elements.meanAnomalyDeg = satA.elements.meanAnomalyDeg + 0.012;
+    // An along-track offset of 0.0018° in a ~6898 km orbit creates an exact ~216 m miss distance at TCA
+    satB.elements.meanAnomalyDeg = satA.elements.meanAnomalyDeg + 0.0018;
     satB.elements.epochTimeMs = satA.elements.epochTimeMs;
     satB.orbitPath = sampleOrbitPath(satB.elements, 64);
     satB.hasManeuvered = false;
@@ -155,19 +157,6 @@ export class CentralSimulationEngine {
 
     this.propagateAll(this.clock.currentSimTimeMs);
     this.recomputeConjunctions();
-
-    // Ensure status is flagged
-    satA.status = 'CRITICAL_CONJUNCTION';
-    satA.riskLevel = 'Critical';
-    satA.conjunctionPartnerId = satB.id;
-    satA.minMissDistanceM = customMissDistanceM;
-    satA.pocValue = 3.84e-4;
-
-    satB.status = 'CRITICAL_CONJUNCTION';
-    satB.riskLevel = 'Critical';
-    satB.conjunctionPartnerId = satA.id;
-    satB.minMissDistanceM = customMissDistanceM;
-    satB.pocValue = 3.84e-4;
 
     this.notifyListeners();
     return true;
